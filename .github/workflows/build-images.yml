@@ -22,6 +22,10 @@ on:
       - "v*"
     branches:
       - plus
+    paths-ignore:
+      - "overlay/**"
+      - "**/*.md"
+      - "SYNC.md"
   workflow_dispatch:
     inputs:
       build_ref:
