@@ -1,0 +1,137 @@
+name: Build Images (GHCR)
+
+# Собирает 6 образов нашего дистрибутива Plane на раннерах GitHub и пушит их в
+# ghcr.io/gentslava/plane-<service>.
+#
+# Каналы тегов:
+#   - stable (релизный тег v* или ветка master): :<version> + :latest
+#   - dev    (любая другая ветка):                :<branch>   (напр. plus -> :plus)
+#
+# Триггеры:
+#   - push тега v*       -> stable: :<tag> + :latest
+#   - push в ветку plus  -> dev:    :plus
+#   - workflow_dispatch  -> собирает build_ref; канал по ref (master/v* -> stable,
+#                           иначе :<sanitized ref>); image_tag переопределяет тег.
+#
+# База ветки plus — eyriehq/plane-plus (Plus: App Rail/Wiki/AI/epics/api-key).
+# Контексты/Dockerfile'ы совпадают с upstream-раскладкой apps/*.
+
+on:
+  push:
+    tags:
+      - "v*"
+    branches:
+      - plus
+  workflow_dispatch:
+    inputs:
+      build_ref:
+        description: "Git ref (ветка или тег), из которого собирать"
+        required: true
+        default: "plus"
+        type: string
+      image_tag:
+        description: "Переопределить тег (пусто = по каналу: stable->version+latest, иначе ->branch)"
+        required: false
+        default: ""
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_OWNER: gentslava
+
+jobs:
+  build:
+    name: Build ${{ matrix.service }}
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { service: web, context: ".", dockerfile: ./apps/web/Dockerfile.web }
+          - { service: space, context: ".", dockerfile: ./apps/space/Dockerfile.space }
+          - { service: admin, context: ".", dockerfile: ./apps/admin/Dockerfile.admin }
+          - { service: live, context: ".", dockerfile: ./apps/live/Dockerfile.live }
+          - { service: api, context: "./apps/api", dockerfile: ./apps/api/Dockerfile.api }
+          - { service: proxy, context: "./apps/proxy", dockerfile: ./apps/proxy/Dockerfile.ce }
+    steps:
+      - name: Resolve build ref
+        id: ref
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "value=${{ github.event.inputs.build_ref }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout ${{ steps.ref.outputs.value }}
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.ref.outputs.value }}
+          fetch-depth: 0
+
+      - name: Compute image tags
+        id: meta
+        run: |
+          IMAGE="${REGISTRY}/${IMAGE_OWNER}/plane-${{ matrix.service }}"
+          EVENT="${{ github.event_name }}"
+          REF_TYPE="${{ github.ref_type }}"
+          EXPLICIT="${{ github.event.inputs.image_tag }}"
+          SRC="${{ steps.ref.outputs.value }}"
+
+          # Канал: stable для релизного тега или ветки master, иначе dev
+          if [ "$EVENT" = "push" ] && [ "$REF_TYPE" = "tag" ]; then
+            CHANNEL=stable
+            VERSION="${{ github.ref_name }}"
+          else
+            case "$SRC" in
+              master | v[0-9]*) CHANNEL=stable ;;
+              *) CHANNEL=dev ;;
+            esac
+            VERSION="$EXPLICIT"
+          fi
+
+          if [ "$CHANNEL" = "stable" ]; then
+            if [ -z "$VERSION" ]; then
+              VERSION="$(git describe --tags --abbrev=0 2>/dev/null || true)"
+            fi
+            if [ -n "$VERSION" ]; then
+              TAGS="${IMAGE}:${VERSION},${IMAGE}:latest"
+            else
+              TAGS="${IMAGE}:latest"
+            fi
+          else
+            TAG="${EXPLICIT:-$(echo "$SRC" | sed 's#[^a-zA-Z0-9._-]#-#g')}"
+            TAGS="${IMAGE}:${TAG}"
+          fi
+
+          echo "tags=${TAGS}" >> "$GITHUB_OUTPUT"
+          echo "Channel=${CHANNEL}  Ref=${SRC}  Tags=${TAGS}"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push plane-${{ matrix.service }}
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          platforms: linux/amd64
+          push: true
+          provenance: false
+          tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=gha,scope=plane-${{ matrix.service }}
+          cache-to: type=gha,mode=max,scope=plane-${{ matrix.service }}
