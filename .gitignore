@@ -111,3 +111,10 @@ build/
 temp/
 scripts/
 .pnpm-store/
+!packages/i18n/scripts/
+
+# i18n auto-generated types (regenerated on every build)
+packages/i18n/src/types/keys.generated.ts
+
+# Local security notes (not for version control)
+/security/
