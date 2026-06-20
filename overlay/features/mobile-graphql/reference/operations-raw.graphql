@@ -1,0 +1,3890 @@
+### AddEpicWorkItemRelationMutation
+      mutation AddEpicWorkItemRelationMutation(
+        $slug: String!,
+        $project: String!,
+        $epic: String!,
+        $relationType: String!,
+        $relatedWorkItemIds: [String!]!
+      ) {
+        addEpicWorkItemRelation(
+          slug: $slug, 
+          project: $project, 
+          epic: $epic,
+          relationType: $relationType,
+          relatedWorkItemIds: $relatedWorkItemIds
+      )
+    }
+  
+
+### AddExistingWorkItemsMutation
+        mutation AddExistingWorkItemsMutation(
+          $slug: String!,
+          $project: String!,
+          $epic: String!,
+          $workItemIds: [String!]!,
+        ) {
+          addExistingWorkItems(
+            slug: $slug, 
+            project: $project,
+            epic: $epic,
+            workItemIds: $workItemIds,
+          )
+        }
+      
+
+### AllProjectsQuery
+      query AllProjectsQuery (
+        $slug: String!
+        $type: String!
+      ) {
+        allProjects(
+          slug: $slug
+          type: $type
+        ) {
+          id
+          name
+          identifier
+          logoProps
+        }
+      }
+    
+
+### CatchUpMarkAllAsReadMutation
+        mutation CatchUpMarkAllAsReadMutation(
+            $slug: String!
+        ) {
+            catchUpMarkAllAsRead(
+                slug: $slug
+            )
+        }
+      T
+
+### CatchUpMarkAsReadMutation
+        mutation CatchUpMarkAsReadMutation(
+            $slug: String!
+            $type: CatchUpTypeEnum!
+            $typeId: String!
+        ) {
+            catchUpMarkAsRead(
+                slug: $slug
+                type: $type
+                typeId: $typeId
+            )
+        }
+      
+
+### CatchUpQuery
+        query CatchUpQuery(
+            $slug: String!
+        ) {
+            catchUps(
+                slug: $slug
+            ) {
+                projectId
+                id
+                type
+                count
+                workItem {
+                    id
+                    name
+                    projectIdentifier
+                    sequenceId
+                    intakeId
+                }
+                firstUnread { 
+                    id
+                    type
+                }
+                lastUnread { 
+                    id
+                    type
+                } 
+            }
+        }
+      
+
+### CollectionPagesQuery
+      query CollectionPagesQuery (
+          $slug: String!
+          $collection: String!
+          $cursor: String!
+      ) {
+          collectionPages (
+              slug: $slug
+              collection: $collection
+              cursor: $cursor
+          ) {
+              prevCursor
+              cursor
+              nextCursor
+              prevPageResults
+              nextPageResults
+              count
+              totalCount
+              results {
+                  id
+                  parent
+                  name
+                  description
+                  workspace
+                  ownedBy
+                  access
+                  color
+                  archivedAt
+                  isLocked
+                  viewProps
+                  logoProps
+                  isGlobal
+                  createdAt
+                  updatedAt
+                  isShared
+                  isSharedAccess
+              }    
+          }
+      }
+      
+
+### CollectionsQuery
+      query CollectionsQuery(
+        $slug: String!
+        $cursor: String!
+      ) {
+        collections(
+          slug: $slug
+          cursor: $cursor
+        ) {
+          prevCursor
+          cursor
+          nextCursor
+          prevPageResults
+          nextPageResults
+          count
+          totalCount
+          results {
+            id
+            name
+            access
+            pageCount
+            isDefault
+            logoProps
+            sortOrder
+            ownedBy
+            workspace
+            createdAt
+            updatedAt
+            createdBy
+            updatedBy
+          }
+        }
+      }
+      
+
+### CompleteTourMutation
+        mutation CompleteTourMutation($input: TourTypeInput!) {
+          completeTour(input: $input) {
+            homeTour
+          }
+        }
+      
+
+### CreateCollectionMutation
+      mutation CreateCollectionMutation(
+        $slug: String!
+        $input: CollectionCreateInput!
+      ) {
+        createCollection(slug: $slug, input: $input) {
+          id
+          name
+          access
+          isDefault
+          logoProps
+          sortOrder
+          ownedBy
+          workspace
+          createdAt
+          updatedAt
+          createdBy
+          updatedBy
+        }
+      }
+    
+
+### CreateCollectionPageMutation
+      mutation CreateCollectionPageMutation(
+        $slug: String!
+        $collection: String!
+        $input: CollectionPageCreateInput!
+      ) {
+        createCollectionPage(slug: $slug, collection: $collection, input: $input) {
+          id
+          parent
+          name
+          description
+          workspace
+          ownedBy
+          access
+          color
+          archivedAt
+          isLocked
+          viewProps
+          logoProps
+          isGlobal
+          createdAt
+          updatedAt
+          isShared
+          isSharedAccess
+        }
+      }
+    
+
+### CreateEpicLinkMutation
+      mutation CreateEpicLinkMutation (
+          $slug: String!,
+          $project: String!,
+          $epic: String!,
+          $linkInput: EpicLinkCreateInputType!,
+      ) {
+          createEpicLink (
+              slug: $slug, 
+              project: $project, 
+              epic: $epic,
+              linkInput: $linkInput,
+          ) {
+              id,
+              url,
+              title   
+          }
+      }
+    
+
+### CreateEpicWorkItemMutation
+      mutation CreateEpicWorkItemMutation(
+       $slug: String!,
+       $project: String!,
+       $epic: String!,
+       $issueInput: IssueCreateInputType!
+      ) {
+        createEpicWorkItem(
+          slug: $slug,
+          project: $project,
+          epic: $epic,
+          issueInput: $issueInput
+        ) {
+          id
+          name
+          state
+          priority
+          workspace
+          project
+          description
+          startDate
+          targetDate
+          labels
+          assignees
+          estimatePoint
+          parent
+        }
+      }
+    
+
+### CreateIssue
+      mutation CreateIssue(
+       $slug: String!,
+       $project: String!,
+       $name: String!,
+       $descriptionHtml: String,
+       $state: String!,
+       $priority: String!,
+       $assignees: [ID!],
+       $labels: [ID!],
+       $startDate: DateTime,
+       $targetDate: DateTime,
+       $parent: String,
+      ) {
+        createIssue(
+          slug: $slug,
+          name: $name,
+          descriptionHtml: $descriptionHtml,
+          project: $project,
+          state:$state,
+          priority: $priority,
+          assignees: $assignees,
+          labels: $labels,
+          startDate: $startDate,
+          targetDate: $targetDate,
+          parent: $parent,
+        ) {
+          id
+          name
+          state
+          priority
+          workspace
+          project
+          description
+          startDate
+          targetDate
+          labels
+          assignees
+          estimatePoint
+          parent
+          sequenceId
+          projectIdentifier
+        }
+      }
+    
+
+### CreateIssueAttachmentMutation
+      mutation CreateIssueAttachmentMutation(
+        $slug: String!,
+        $project: ID!,
+        $issue: ID!,
+        $name: String!,
+        $type: String!,
+        $size: Int!,
+      ) {
+        createIssueAttachment(
+          slug: $slug,
+          project: $project,
+          issue: $issue,
+          name: $name,
+          type: $type,
+          size: $size,
+        ) {
+          uploadData
+          attachmentId
+          assetUrl
+        }
+      }
+    
+
+### CreateIssueLink
+      mutation CreateIssueLink (
+          $slug: String!,
+          $project: ID!,
+          $issue: ID!,
+          $title: String!,
+          $url: String!,
+      ) {
+          createIssueLink (
+              slug: $slug, 
+              project: $project, 
+              issue: $issue,
+              title: $title,
+              url: $url
+          ) {
+              id,
+              url,
+              title   
+          }
+      }
+    
+
+### CreatePageMutation
+      mutation CreatePageMutation(
+      $slug: String!
+      $project: ID!
+      $name: String!
+      $descriptionHtml: String!
+      $access: Int!
+      $logoProps: JSON!
+      ) {
+          createPage (
+              slug: $slug,
+              project: $project,
+              name: $name,
+              descriptionHtml: $descriptionHtml,
+              access: $access,
+              logoProps: $logoProps
+          ) {
+              id
+              projects
+              parent
+              name
+              description
+              workspace
+              ownedBy
+              access
+              color
+              archivedAt
+              isLocked
+              viewProps
+              logoProps
+              isGlobal
+              createdAt
+              updatedAt
+          }
+      }
+    
+
+### CreateProjectAssetMutation
+      mutation CreateProjectAssetMutation(
+        $slug: String!,
+        $project: ID!,
+        $name: String!,
+        $type: String!,
+        $size: Int!,
+        $entityType: ProjectAssetEnumType!,
+        $entityIdentifier: String
+      ) {
+        createProjectAsset(
+          slug: $slug,
+          project: $project,
+          name: $name,
+          type: $type,
+          size: $size,
+          entityType: $entityType,
+          entityIdentifier: $entityIdentifier
+        ) {
+          uploadData
+          assetId
+          assetUrl
+        }
+      }
+    
+
+### CreateWorkspaceAssetMutation
+      mutation CreateWorkspaceAssetMutation(
+        $slug: String!,
+        $name: String!,
+        $type: String!,
+        $size: Int!,
+        $entityType: WorkspaceAssetEnumType!,
+        $entityIdentifier: String
+      ) {
+        createWorkspaceAsset(
+          slug: $slug,
+          name: $name,
+          type: $type,
+          size: $size,
+          entityType: $entityType,
+          entityIdentifier: $entityIdentifier
+        ) {
+          uploadData
+          assetId
+        }
+      }
+    
+
+### CreateWorkspaceMutation
+      mutation CreateWorkspaceMutation(
+          $workspaceInput: WorkspaceCreateInputType!
+      ) {
+          createWorkspace (
+              workspaceInput: $workspaceInput
+          ) {
+              id
+          }
+      }
+      
+
+### CreateWorkspacePageMutation
+      mutation CreateWorkspacePageMutation(
+      $slug: String!
+      $name: String!
+      $descriptionHtml: String!
+      $access: Int!
+      $logoProps: JSON!
+      ) {
+          createWorkspacePage (
+              slug: $slug,
+              name: $name,
+              descriptionHtml: $descriptionHtml,
+              access: $access,
+              logoProps: $logoProps
+          ) {
+              id
+              projects
+              parent
+              name
+              description
+              workspace
+              ownedBy
+              access
+              color
+              archivedAt
+              isLocked
+              viewProps
+              logoProps
+              isGlobal
+              createdAt
+              updatedAt
+          }
+      }
+    
+
+### CycleFavoriteMutation
+        mutation CycleFavoriteMutation (
+          $slug: String!, 
+          $project: ID!, 
+          $cycle: ID!,
+        ) {
+          favoriteCycle (
+            slug: $slug,
+            project: $project,
+            cycle: $cycle
+          )
+        }
+    
+
+### CycleIssueQuery
+        query CycleIssueQuery(
+            $slug: String!, 
+            $project: ID!, 
+            $cycle: ID!, 
+            $cursor: String,
+            $filters: JSON,
+            $orderBy: String
+          ) {
+            cycleIssues(
+                slug: $slug, 
+                project: $project, 
+                cycle: $cycle, 
+                cursor: $cursor,
+                filters: $filters,
+                orderBy: $orderBy
+              ) {
+                nextCursor
+                nextPageResults
+                count
+                totalCount
+                results {
+                    id
+                    state
+                    name
+                    priority
+                    startDate
+                    targetDate
+                    sequenceId
+                    assignees
+                    labels
+                    workspace
+                    project
+                    sequenceId
+                }
+            }
+        }
+      
+
+### CycleIssueUserPropertiesQuery
+      query CycleIssueUserPropertiesQuery(
+          $slug: String!, 
+          $project: ID!, 
+          $cycle: ID!, 
+        ) {
+        cycleIssueUserProperties(
+            slug: $slug, 
+            project: $project
+            cycle: $cycle
+          ) {
+            displayFilters
+            displayProperties
+            filters
+            id
+          }
+        }
+      
+
+### CycleUnFavoriteMutation
+        mutation CycleUnFavoriteMutation (
+          $slug: String!, 
+          $project: ID!, 
+          $cycle: ID!,
+        ) {
+          unFavoriteCycle (
+            slug: $slug,
+            project: $project,
+            cycle: $cycle
+          )
+        }
+    
+
+### Cycles
+      query Cycles(
+        $slug: String!, 
+        $project: ID!,
+        $cycle: ID!
+      ){
+        cycle (
+        slug: $slug,
+        project: $project,
+        cycle: $cycle,
+        ) {
+        id
+        name,
+        description,
+        startDate
+        endDate
+        totalIssues,
+        completedIssues,
+        viewProps
+        sortOrder
+        externalSource
+        externalId
+        progressSnapshot
+        archivedAt
+        logoProps
+        project
+        workspace
+        createdBy
+        updatedBy
+        createdAt
+        updatedAt
+        ownedBy {
+            id
+            displayName
+            avatarUrl
+        }
+        isFavorite
+      }
+    }
+    
+
+### DeleteEpicMutation
+        mutation DeleteEpicMutation(
+          $slug: String!
+          $project: String!
+          $epic: String!
+        ) {
+          deleteEpic(
+            slug: $slug
+            project: $project
+            epic: $epic
+          )
+        }
+      ^
+
+### DeleteIntakeWorkItemMutation
+        mutation DeleteIntakeWorkItemMutation(
+          $slug: String!
+          $project: String!
+          $intakeWorkItem: String!
+        ) {
+          deleteIntakeWorkItem(
+            slug: $slug
+            project: $project
+            intakeWorkItem: $intakeWorkItem
+          )
+        }
+      
+
+### DeleteWorkItemMutation
+        mutation DeleteWorkItemMutation (
+          $slug: String!, 
+          $project: String!
+          $workItem: String!
+        ) {
+          deleteWorkItem (
+            slug: $slug, 
+            project: $project, 
+            workItem: $workItem,
+          )
+        }
+      
+
+### DeviceInformationMutation
+      mutation DeviceInformationMutation (
+          $deviceId: String!,
+          $deviceType: DeviceInformationEnumType!,
+          $pushToken: String!,
+      ) {
+          deviceInformation (
+              deviceId: $deviceId,
+              deviceType: $deviceType,
+              pushToken: $pushToken,
+          ) {
+              user
+              deviceId
+              deviceType
+              pushToken
+              isActive
+          }
+      }
+
+### EpicActivityQuery
+        query EpicActivityQuery (
+          $slug: String!
+          $project: String!
+          $epic: String!
+        ) {
+            epicActivities (
+            slug: $slug
+            project: $project
+            epic: $epic
+          ) 
+          {
+            id
+            issue
+            verb
+            field
+            oldValue
+            newValue
+            comment
+            attachments
+            issueComment
+            actor
+            
+
+### EpicAttachmentMutation
+      mutation EpicAttachmentMutation(
+          $slug: String!
+          $project: String!
+          $epic: String!
+          $attachment: String!
+          $attachmentInput: EpicAttachmentUpdateInputType!
+      ) {
+          updateEpicAttachment(
+              slug: $slug
+              project: $project
+              epic: $epic
+              attachment: $attachment
+              attachmentInput: $attachmentInput
+          ) {
+              id
+              assetUrl
+          }
+      }
+    
+
+### EpicAttachmentsQuery
+        query EpicAttachmentsQuery($slug: String!, $project: String!, $epic: String!) {
+          epicAttachments(slug:$slug, project:$project, epic:$epic) {
+          id
+          attributes
+          assetUrl
+        }
+      }
+      
+
+### EpicCommentMutation
+        mutation EpicCommentMutation(
+          $slug: String!,
+          $project: String!,
+          $epic: String!,
+          $commentInput: EpicCommentInputType!
+        ) {
+            addEpicComment(
+              slug: $slug, 
+              project: $project, 
+              epic: $epic,
+              commentInput: $commentInput
+            ) {
+                id
+              }
+          }
+      
+
+### EpicCommentQuery
+        query EpicCommentQuery (
+          $slug: String!
+          $project: String!
+          $epic: String!
+        ) {
+            epicComments (
+            slug: $slug
+            project: $project
+            epic: $epic
+          ) {
+              id
+              commentHtml
+              issue
+              actor
+              
+
+### EpicCommentReactionMutation
+        mutation EpicCommentReactionMutation(
+          $slug: String!
+          $project: String!
+          $epic: String!
+          $comment: String!
+          $reactionInput: CommentReactionInput!
+        ) {
+          removeEpicCommentReaction(
+            slug: $slug
+            project: $project
+            epic: $epic
+            comment: $comment
+            reactionInput: $reactionInput
+          ) {
+            reaction
+            userIds
+          }
+        }
+      
+
+### EpicCommentReactionQuery
+    query EpicCommentReactionQuery(
+      $slug: String!
+      $project: String!
+      $epic: String!
+      $comment: String!
+    ) {
+      epicCommentReactions(
+        slug: $slug
+        project: $project
+        epic: $epic
+        comment: $comment
+      ) {
+        reaction
+        userIds
+      }
+    }
+  
+
+### EpicCountQuery
+      query EpicCountQuery(
+          $slug: String!
+          $project: String!
+      ) {
+          epicCount(
+              slug: $slug
+              project: $project
+          ) {
+              totalEpics
+          }
+      }
+      
+
+### EpicDetailsQuery
+      query EpicDetailsQuery($slug: String!, $project: String!, $epic: String!) {
+        epic (slug: $slug, project: $project, epic: $epic) {
+          id
+          state
+          name
+          descriptionHtml
+          descriptionBinary
+          priority
+          startDate
+          targetDate
+          sequenceId
+          assignees
+          labels
+          workspace
+          project
+          projectIdentifier
+          createdBy
+          
+
+### EpicLinksQuery
+        query EpicLinksQuery($slug: String!, $project: String!, $epic: String!) {
+          epicLinks(slug:$slug, project:$project, epic:$epic) {
+          id
+          title
+          url
+        }
+      }
+      
+
+### EpicMutation
+      mutation EpicMutation(
+        $slug: String!
+        $project: String!
+        $epicInput: EpicCreateInputType!
+      ) {
+        createEpic(
+          slug: $slug
+          project: $project
+          epicInput: $epicInput
+        ) {
+          id
+          name
+          description
+          descriptionHtml
+          descriptionStripped
+          descriptionBinary
+          sequenceId
+          sortOrder
+          state
+          priority
+          startDate
+          targetDate
+          assignees
+          labels
+          workspace
+          project
+          projectIdentifier
+          createdBy
+          updatedBy
+          createdAt
+          updatedAt
+        }
+      }
+
+
+### EpicPageMutation
+      mutation EpicPageMutation (
+        $slug: String!
+        $project: String!
+        $epic: String!
+        $pageIds: [String!]!
+    ) {
+        addEpicPage (
+            slug: $slug
+            project: $project
+            epic: $epic
+            pageIds: $pageIds
+        ) {
+            id
+            name 
+            logoProps
+            isGlobal
+            access
+        }
+    }
+    
+
+### EpicPageQuery
+      query EpicPageQuery (
+        $slug: String!
+        $project: String!
+        $epic: String!
+    ) {
+        epicPages (
+            slug: $slug
+            project: $project
+            epic: $epic
+        ) {
+            id
+            name 
+            logoProps
+            isGlobal
+            access
+        }
+    }
+    
+
+### EpicPageSearchQuery
+      query EpicPageSearchQuery (
+        $slug: String!
+        $project: String!
+        $epic: String!
+        $search: String!
+        $isGlobal: Boolean!
+    ) {
+        searchEpicPages (
+            slug: $slug
+            project: $project
+            epic: $epic
+            search: $search
+            isGlobal: $isGlobal
+        ) {
+            id
+            name 
+            logoProps
+            isGlobal
+            access
+        }
+    }
+    
+
+### EpicQuery
+        query EpicQuery(
+            $slug: String!, 
+            $project: String!, 
+            $cursor: String,
+            $filters: JSON,
+            $orderBy: String
+          ) {
+            epics(
+                slug: $slug, 
+                project: $project, 
+                cursor: $cursor,
+                filters: $filters,
+                orderBy: $orderBy
+              ) {
+                nextCursor
+                nextPageResults
+                count
+                totalCount
+                results {
+                    id
+                    state
+                    name
+                    priority
+                    startDate
+                    targetDate
+                    sequenceId
+                    assignees
+                    labels
+                    workspace
+                    project
+                    sequenceId
+                    projectIdentifier
+                    analytics {
+                        backlog
+                        unstarted
+                        started
+                        completed
+                        cancelled
+                    }
+                }
+            }
+        }
+      
+
+### EpicRelationQuery
+      query EpicRelationQuery(
+        $slug: String!,
+        $project: String!,
+        $epic: String!
+      ) {
+        epicRelation(
+          slug: $slug, 
+          project: $project, 
+          epic: $epic
+        ) {
+          blocking {
+            id
+            name
+            priority
+            state
+            assignees
+            project
+            projectIdentifier
+            sequenceId
+            
+
+### EpicStatsQuery
+      query EpicStatsQuery(
+        $slug: String!
+        $project: String!
+        $epic: String!
+      ) {
+        epicStats(
+          slug: $slug
+          project: $project
+          epic: $epic
+        ) {
+          attachments
+          relations
+          subWorkItems
+          links
+          
+
+### EpicUserPropertiesQuery
+      query EpicUserPropertiesQuery(
+          $slug: String!, 
+          $project: String!, 
+        ) {
+        epicUserProperty(
+            slug: $slug, 
+            project: $project
+          ) {
+            displayFilters
+            displayProperties
+            filters
+            id
+          }
+        }
+      
+
+### EpicWorkItemsQuery
+        query EpicWorkItemsQuery(
+            $slug: String!, 
+            $project: String!, 
+            $epic: String!,
+            $cursor: String!,
+          ) {
+            epicWorkItems(
+                slug: $slug, 
+                project: $project,
+                epic: $epic,
+                cursor: $cursor,
+              ) {
+                prevCursor
+                cursor
+                nextCursor
+                prevPageResults
+                nextPageResults
+                count
+                totalCount
+                results {
+                    id
+                    parent
+                    state
+                    point
+                    estimatePoint
+                    name
+                    priority
+                    startDate
+                    targetDate
+                    sequenceId
+                    assignees
+                    labels
+                    workspace
+                    project
+                    sequenceId
+                }
+            }
+        }
+      
+
+### FavoritePage
+      mutation FavoritePage(
+        $slug: String!, 
+        $page: ID!,
+        $project: ID!,
+      ) {
+        favoritePage(
+          slug: $slug, 
+          page: $page,
+          project: $project,
+        )
+      }
+    
+
+### FavoritesQuery
+      query FavoritesQuery($slug: String!, $limit: Int!) {
+        favorites(slug: $slug, limit: $limit) {
+          id
+          entityType
+          entityIdentifier
+          name
+          isFolder
+          sequence
+          parent
+          createdAt
+          updatedAt
+          deletedAt
+          entityData {
+            id
+            name
+            logoProps
+            isEpic
+            workitemIdentifier
+          }
+          projectDetails {
+            id
+            name
+            identifier
+            logoProps
+          }
+        }
+      }
+    
+
+### FeatureFlagQuery
+      query FeatureFlagQuery(
+        $slug: String!,
+        )
+        {
+          featureFlag(
+            slug: $slug,
+          )
+          {
+            collaborationCursor
+            editorAiOps
+            pageIssueEmbeds
+            timelineDependency
+            
+
+### GlobalSearchQuery
+        query GlobalSearchQuery (
+          $slug: String!, 
+          $query: String!, 
+          $project: ID, 
+          $cycle: ID, 
+          $module: ID,
+        ) {
+            globalSearch(
+            slug: $slug, 
+            query: $query, 
+            project: $project, 
+            cycle: $cycle, 
+            module: $module,
+            
+
+### InitiativeAttachmentsQuery
+      query InitiativeAttachmentsQuery($slug: String!, $initiative: String!) {
+        initiativeAttachments(slug: $slug, initiative: $initiative) {
+          id
+          attributes
+          asset
+          assetUrl
+          size
+          entityType
+          entityIdentifier
+          storageMetadata
+          isUploaded
+          isArchived
+          isDeleted
+          externalId
+          externalSource
+          deletedAt
+          user
+          workspace
+          project
+          draftIssue
+          issue
+          comment
+          page
+          createdBy
+          updatedBy
+          createdAt
+          updatedAt
+        }
+      }
+    :
+
+### InitiativeEpicsQuery
+        query InitiativeEpicsQuery (
+            $slug: String!
+            $initiative: String!
+        ) {
+            initiativeEpics (
+                slug: $slug
+                initiative: $initiative
+            ) {
+                id
+                sequenceId
+                name
+                priority
+                sortOrder
+                startDate
+                targetDate
+                state
+                stateDetails {
+                  color
+                  default
+                  group
+                  id
+                  name
+                  order
+                }
+                assignees
+                analytics {
+                    backlog
+                    unstarted
+                    started
+                    completed
+                    cancelled
+                }
+                workspace
+                project
+                projectIdentifier
+                createdAt
+                updatedAt
+                createdBy
+                updatedBy
+            }
+        }
+      
+
+### InitiativeInformationQuery
+      query InitiativeInformationQuery (
+          $slug: String!
+      ) {
+          initiativeInformation (
+              slug: $slug
+          ) {
+              createdBy
+              lead
+          }
+      }
+    
+
+### InitiativeLabelsQuery
+      query InitiativeLabelsQuery (
+          $slug: String!
+      ) {
+          initiativeLabels (
+              slug: $slug
+          ) {
+              id
+              name
+              description
+              sortOrder
+              color
+              workspace
+              createdAt
+              updatedAt
+              createdBy
+              updatedBy
+          }
+      }
+    
+
+### InitiativeLinksQuery
+      query InitiativeLinksQuery($slug: String!, $initiative: String!) {
+        initiativeLinks(slug: $slug, initiative: $initiative) {
+          id
+          title
+          url
+          metadata
+          workspace
+          createdBy
+          updatedBy
+          createdAt
+          updatedAt
+        }
+      }
+    
+
+### InitiativeProjectsQuery
+        query InitiativeProjectsQuery (
+            $slug: String!
+            $initiative: String!
+        ) {
+            initiativeProjects (
+                slug: $slug
+                initiative: $initiative
+            ) {
+                id
+                identifier
+                name
+                logoProps
+                projectLead
+                totalActiveIssues
+                network
+                workspace
+                createdAt
+                updatedAt
+                createdBy
+                updatedBy
+            }
+        }
+      
+
+### InitiativeQuery
+      query InitiativeQuery (
+          $slug: String!
+          $initiative: String!
+      ) {
+          initiative (
+              slug: $slug
+              initiative: $initiative
+          ) {
+                id
+  name
+  descriptionHtml
+  lead
+  startDate
+  endDate
+  logoProps
+  state
+  labels
+  workspace
+  createdAt
+  updatedAt
+  createdBy
+  updatedBy
+  projects
+  epics
+  progress {
+      analytics {
+        backlog
+        unstarted
+        started
+        completed
+        cancelled
+      }
+      projects {
+          id
+          analytics {
+              backlog
+              unstarted
+              started
+              completed
+              cancelled
+          }
+      }
+      epics {
+          id
+          analytics {
+              backlog
+              unstarted
+              started
+              completed
+              cancelled
+          }
+      }
+  }
+
+          }
+      }
+    
+
+### InitiativeUserPropertyQuery
+      query InitiativeUserPropertyQuery (
+          $slug: String!
+      ) {
+          initiativeUserProperty (
+              slug: $slug
+          ) {
+              id
+              filters
+              displayFilters
+              workspace
+              user
+              createdAt
+              updatedAt
+              createdBy
+              updatedBy
+          }
+      }
+    
+
+### InitiativesCountQuery
+      query InitiativesCountQuery (
+          $slug: String!
+      ) {
+          initiativesCount (
+              slug: $slug
+          ) {
+              totalCount
+              totalCountByLead
+          }
+      }
+    
+
+### InitiativesQuery
+      query InitiativesQuery (
+          $slug: String!
+          $filters: InitiativesFiltersInput!
+          $cursor: String!
+          $orderBy: String
+          $groupBy: String
+      ) {
+          initiatives (
+              slug: $slug
+              filters: $filters
+              cursor: $cursor
+              orderBy: $orderBy
+              groupBy: $groupBy
+          ) {
+              prevCursor
+              cursor
+              nextCursor
+              prevPageResults
+              nextPageResults
+              count
+              totalCount
+              results {
+                  id
+                  name
+                  lead
+                  logoProps
+                  state
+                  progress {
+                      projects {
+                          id
+                          analytics {
+                              backlog
+                              unstarted
+                              started
+                              completed
+                              cancelled
+                          }
+                      }
+                      epics {
+                          id
+                          analytics {
+                              backlog
+                              unstarted
+                              started
+                              completed
+                              cancelled
+                          }
+                      }
+                  }
+              }
+          }
+      }
+    
+
+### IntakeSearchQuery
+    query IntakeSearchQuery(
+      $slug: String!
+      $project: String!
+      $search: String!
+      $cursor: String!
+    ) {
+    intakeSearch(
+      slug: $slug
+      project: $project
+      search: $search
+      cursor: $cursor
+    ) {
+      prevCursor
+      cursor
+      nextCursor
+      prevPageResults
+      nextPageResults
+      count
+      totalCount
+      results {
+        id
+        status
+        snoozedTill
+        duplicateTo
+        source
+        sourceEmail
+        externalSource
+        externalId
+        extra
+        issue {
+          id
+          name
+          description
+          descriptionHtml
+          descriptionStripped
+          descriptionBinary
+          sequenceId
+          sortOrder
+          state
+          priority
+          startDate
+          targetDate
+          assignees
+          labels
+          workspace
+          project
+          projectIdentifier
+          createdBy
+          updatedBy
+          createdAt
+          updatedAt
+        }    
+      }
+    }
+  }
+
+
+### IntakeStatsQuery
+      query IntakeStatsQuery(
+        $slug: String!
+        $project: String!
+        $intakeWorkItem: String!
+      ) {
+        intakeStats(
+          slug: $slug
+          project: $project
+          intakeWorkItem: $intakeWorkItem
+        ) {
+          attachments
+          relations
+          subWorkItems
+          links
+        }
+      }
+    
+
+### IntakeWorkItemActivityQuery
+      query IntakeWorkItemActivityQuery (
+        $slug: String!
+        $project: String!
+        $intakeWorkItem: String!
+      ) {
+          intakeWorkItemActivities (
+            slug: $slug
+            project: $project
+            intakeWorkItem: $intakeWorkItem
+          ) {
+              id
+              issue
+              verb
+              field
+              oldValue
+              newValue
+              comment
+              attachments
+              issueComment
+              actor
+              
+
+### IntakeWorkItemAttachmentMutation
+      mutation IntakeWorkItemAttachmentMutation(
+        $slug: String!
+        $project: String!
+        $intakeWorkItem: String!
+        $attachment: String!
+        $attachmentInput: IntakeWorkItemAttachmentUpdateInputType!
+      ) {
+        updateIntakeWorkItemAttachment(
+          slug: $slug
+          project: $project
+          intakeWorkItem: $intakeWorkItem
+          attachment: $attachment
+          attachmentInput: $attachmentInput
+        ) {
+          id
+          assetUrl
+          attributes
+        }
+      }
+    
+
+### IntakeWorkItemAttachmentQuery
+      query IntakeWorkItemAttachmentQuery(
+        $slug: String!
+        $project: String!
+        $intakeWorkItem: String!
+      ) {
+        intakeWorkItemAttachments(
+          slug: $slug
+          project: $project
+          intakeWorkItem: $intakeWorkItem
+        ) {
+          id
+          assetUrl
+          attributes
+        }
+      }
+    
+
+### IntakeWorkItemByWorkItemQuery
+      query IntakeWorkItemByWorkItemQuery(
+        $slug: String!
+        $project: String!
+        $workItem: String!
+      ) {
+        intakeWorkItemByWorkItem(
+          slug: $slug
+          project: $project
+          workItem: $workItem
+        ) {
+          id
+          status
+          snoozedTill
+          duplicateTo
+          source
+          sourceEmail
+          externalSource
+          externalId
+          extra
+          issue {
+            id
+            name
+            description
+            descriptionHtml
+            descriptionStripped
+            descriptionBinary
+            sequenceId
+            sortOrder
+            state
+            priority
+            startDate
+            targetDate
+            assignees
+            labels
+            workspace
+            project
+            projectIdentifier
+            createdBy
+            updatedBy
+            createdAt
+            updatedAt
+          }    
+        }
+      }
+    
+
+### IntakeWorkItemCommentMutation
+      mutation IntakeWorkItemCommentMutation(
+          $slug: String!,
+          $project: String!,
+          $intakeWorkItem: String!,
+          $commentInput: IntakeWorkItemCommentInputType!
+        ) {
+          addIntakeWorkItemComment(
+            slug: $slug, 
+            project: $project, 
+            intakeWorkItem: $intakeWorkItem,
+            commentInput: $commentInput
+          ) {
+            id
+          }
+        }
+    
+
+### IntakeWorkItemCommentQuery
+        query IntakeWorkItemCommentQuery (
+          $slug: String!
+          $project: String!
+          $intakeWorkItem: String!
+        ) {
+          intakeWorkItemComments (
+            slug: $slug
+            project: $project
+            intakeWorkItem: $intakeWorkItem
+          ) {
+            id
+            commentHtml
+            issue
+            actor
+            
+
+### IntakeWorkItemCommentReactionMutation
+        mutation IntakeWorkItemCommentReactionMutation(
+          $slug: String!
+          $project: String!
+          $intakeWorkItem: String!
+          $comment: String!
+          $reactionInput: CommentReactionInput!
+        ) {
+          removeIntakeWorkItemCommentReaction(
+            slug: $slug
+            project: $project
+            intakeWorkItem: $intakeWorkItem
+            comment: $comment
+            reactionInput: $reactionInput
+          ) {
+            reaction
+            userIds
+          }
+        }
+      
+
+### IntakeWorkItemCommentReactionQuery
+      query IntakeWorkItemCommentReactionQuery(
+      $slug: String!
+      $project: String!
+      $intakeWorkItem: String!
+      $comment: String!
+    ) {
+      intakeWorkItemCommentReactions(
+        slug: $slug
+        project: $project
+        intakeWorkItem: $intakeWorkItem
+        comment: $comment
+      ) {
+        reaction
+        userIds
+      }
+    }
+  
+
+### IntakeWorkItemCommentReplyMutation
+        mutation IntakeWorkItemCommentReplyMutation(
+          $slug: String!,
+          $project: String!,
+          $intakeWorkItem: String!,
+          $comment: String!,
+          $commentInput: IntakeWorkItemCommentInputType!
+        ) { 
+          addIntakeWorkItemCommentReply(slug:$slug, project:$project, intakeWorkItem:$intakeWorkItem, comment:$comment, commentInput:$commentInput){
+            id
+          }
+        }
+      
+
+### IntakeWorkItemMutation
+        mutation IntakeWorkItemMutation(
+          $slug: String!
+          $project: String!
+          $intakeWorkItem: String!
+          $workItemInput: IntakeWorkItemUpdateInputType!
+        ) {
+          updateIntakeWorkItem(
+            slug: $slug
+            project: $project
+            intakeWorkItem: $intakeWorkItem
+            workItemInput: $workItemInput
+          ) {
+            id
+            status
+            snoozedTill
+            duplicateTo
+            source
+            sourceEmail
+            externalSource
+            externalId
+            extra
+            issue {
+              id
+              name
+              description
+              descriptionHtml
+              descriptionStripped
+              descriptionBinary
+              sequenceId
+              sortOrder
+              state
+              priority
+              startDate
+              targetDate
+              assignees
+              labels
+              workspace
+              project
+              projectIdentifier
+              createdBy
+              updatedBy
+              createdAt
+              updatedAt
+            }
+          }
+        }
+    
+
+### IntakeWorkItemQuery
+      query IntakeWorkItemQuery(
+        $slug: String!
+        $project: String!
+        $filters: JSON!
+        $orderBy: String!
+        $cursor: String!
+      ) {
+        intakeWorkItems(
+          slug: $slug
+          project: $project
+          filters: $filters
+          orderBy: $orderBy
+          cursor: $cursor
+        ) {
+            prevCursor
+            cursor
+            nextCursor
+            prevPageResults
+            nextPageResults
+            count
+            totalCount
+            results {
+              id
+              status
+              snoozedTill
+              duplicateTo
+              source
+              sourceEmail
+              externalSource
+              externalId
+              extra
+              issue {
+                id
+                name
+                description
+                descriptionHtml
+                descriptionStripped
+                descriptionBinary
+                sequenceId
+                sortOrder
+                state
+                priority
+                startDate
+                targetDate
+                assignees
+                labels
+                workspace
+                project
+                projectIdentifier
+                createdBy
+                updatedBy
+                createdAt
+                updatedAt
+              }    
+            }
+          }
+        }
+    
+
+### IntakeWorkItemStatusMutation
+        mutation IntakeWorkItemStatusMutation(
+          $slug: String!
+          $project: String!
+          $intakeWorkItem: String!
+          $intakeWorkItemStatusInput: IntakeWorkItemStatusInputType!
+        ) {
+          updateIntakeWorkItemStatus(
+            slug: $slug
+            project: $project
+            intakeWorkItem: $intakeWorkItem
+            intakeWorkItemStatusInput: $intakeWorkItemStatusInput
+          )
+        }
+    
+
+### IsProjectPublicQuery
+      query IsProjectPublicQuery(
+        $slug: String!,
+        $projectId: ID!,
+      ) {
+        isProjectPublic(
+          slug: $slug, 
+          project: $projectId
+        ){
+          id
+          name
+          identifier
+          logoProps
+        }
+      }$
+
+### IssueActivityQuery
+        query IssueActivityQuery(
+          $slug: String!,
+          $project: ID!,
+          $issue: ID!
+        ) {
+          issuePropertyActivities(
+            slug:$slug,
+            project:$project,
+            issue:$issue
+          ) {
+            id
+            issue
+            verb
+            field
+            oldValue
+            newValue
+            comment
+            attachments
+            issueComment
+            actor
+            
+
+### IssueAttachmentsQuery
+        query IssueAttachmentsQuery($slug: String!, $project: ID!, $issue: ID!) {
+          issueAttachment(slug:$slug, project:$project, issue:$issue) {
+          id
+          attributes
+          assetUrl
+        }
+      }
+      
+
+### IssueCommentMutation
+        mutation IssueCommentMutation(
+          $slug: String!,
+          $project: ID!,
+          $issue: ID!,
+          $commentHtml: String!
+        ) {
+          addIssueCommentV2(slug:$slug, project:$project, issue:$issue, commentHtml:$commentHtml){
+            id
+          }
+        }
+      
+
+### IssueCommentsQuery
+        query IssueCommentsQuery(
+          $slug: String!,
+          $project: ID!,
+          $issue: ID!
+        ) {
+          issueCommentActivities(
+            slug:$slug,
+            project:$project,
+            issue:$issue
+          ) {
+            id
+            commentHtml
+            issue
+            actor
+            
+
+### IssueCycleMutation
+      mutation IssueCycleMutation (
+        $slug: String!,
+        $project: ID!,
+        $issue: ID!,
+        $cycle: ID
+      ) {
+          issueCycle (
+            slug: $slug, 
+            project: $project, 
+            issue: $issue, 
+            cycle: $cycle,
+        ) 
+      }
+      
+
+### IssueDetailsMutation
+      mutation IssueDetailsMutation($id: ID!, $slug: String!, $project: String!, $state: String, $parent: String, $estimatePoint: String, $name: String, $descriptionHtml: String, $priority: String, $startDate: DateTime, $targetDate: DateTime, $assignees: [ID!], $labels: [ID!]) {
+        updateIssue(id:$id, slug:$slug, project:$project, state:$state, parent:$parent, estimatePoint:$estimatePoint, name:$name, descriptionHtml:$descriptionHtml, priority:$priority, startDate:$startDate, targetDate:$targetDate, assignees:$assignees, labels:$labels)
+          {
+            id
+            parent
+            state
+            name
+            descriptionHtml
+            descriptionBinary
+            priority
+            startDate
+            targetDate
+            sequenceId
+            assignees
+            labels
+            workspace
+            project
+            cycle
+            modules
+            parentProjectId
+            parentProjectIdentifier
+            projectIdentifier
+          }
+        }
+      
+
+### IssueDetailsQuery
+      query IssueDetailsQuery($slug: String!, $project: ID!, $issue: ID!) {
+        issue (slug: $slug, project: $project, issue: $issue) {
+          id
+          name
+          sequenceId
+        }
+      }
+      
+
+### IssueLinksQuery
+        query IssueLinksQuery($slug: String!, $project: ID!, $issue: ID!) {
+          issueLink(slug:$slug, project:$project, issue:$issue) {
+          id
+          title
+          url
+        }
+      }
+      
+
+### IssueModuleMutation
+      mutation IssueModuleMutation (
+        $slug: String!,
+        $project: ID!,
+        $issue: ID!,
+        $modules: [ID!]!
+      ) {
+          issueModules (
+            slug: $slug, 
+            project: $project, 
+            issue: $issue, 
+            modules: $modules
+          )
+        }
+      
+
+### IssueMutationV2
+      mutation IssueMutationV2(
+       $slug: String!,
+       $project: String!,
+       $issueInput: IssueCreateInputType!
+      ) {
+        createIssueV2(
+          slug: $slug,
+          project: $project,
+          issueInput: $issueInput
+        ) {
+          id
+          name
+          state
+          priority
+          workspace
+          project
+          description
+          startDate
+          targetDate
+          labels
+          assignees
+          estimatePoint
+          parent
+          sequenceId
+          projectIdentifier
+        }
+      }
+    
+
+### IssueQuery
+        query IssueQuery(
+            $slug: String!, 
+            $project: ID!, 
+            $cursor: String,
+            $filters: JSON,
+            $orderBy: String
+          ) {
+            issues(
+                slug: $slug, 
+                project: $project, 
+                cursor: $cursor,
+                filters: $filters,
+                orderBy: $orderBy
+              ) {
+                nextCursor
+                nextPageResults
+                count
+                totalCount
+                results {
+                    id
+                    state
+                    name
+                    priority
+                    startDate
+                    targetDate
+                    sequenceId
+                    assignees
+                    labels
+                    workspace
+                    project
+                    sequenceId
+                    projectIdentifier
+                }
+            }
+        }
+      
+
+### IssueRelationMutation
+      mutation IssueRelationMutation(
+        $slug: String!,
+        $project: ID!,
+        $issue: ID!,
+        $relationType: String!,
+        $relatedIssueIds: [ID!]!
+      ) {
+        addIssueRelation(
+          slug: $slug, 
+          project: $project, 
+          issue: $issue,
+          relationType: $relationType,
+          relatedIssueIds: $relatedIssueIds
+      )
+    }
+  
+
+### IssueRelationQuery
+      query IssueRelationQuery(
+        $slug: String!,
+        $project: ID!,
+        $issue: ID!
+      ) {
+          issueRelation(
+          slug: $slug, 
+          project: $project, 
+          issue: $issue
+        ) {
+          blocking {
+            id
+            name
+            priority
+            state
+            assignees
+            project
+            projectIdentifier
+            sequenceId
+            
+
+### IssueShortenedMetaInfoQuery
+      query IssueShortenedMetaInfoQuery(
+        $slug: String!, 
+        $workItemIdentifier: String!
+      ){
+        issueShortenedMetaInfo (
+        slug: $slug,
+        workItemIdentifier: $workItemIdentifier,
+        ) {
+        project
+        workItem
+        
+
+### IssueStatsQuery
+      query IssueStatsQuery(
+        $slug: String!
+        $project: String!
+        $issue: String!
+      ) {
+        issueStats(
+          slug: $slug
+          project: $project
+          issue: $issue
+        ) {
+          attachments
+          relations
+          subWorkItems
+          links
+          
+
+### IssueUserPropertiesQuery
+      query IssueUserPropertiesQuery(
+          $slug: String!, 
+          $project: ID!, 
+        ) {
+        issueUserProperties(
+            slug: $slug, 
+            project: $project
+          ) {
+            displayFilters
+            displayProperties
+            filters
+            id
+          }
+        }
+      
+
+### JoinProjectMutation
+        mutation JoinProjectMutation(
+          $workspaceSlug: String!,
+          $projectId: ID!
+        ) {
+          joinProject(
+            slug: $workspaceSlug,
+            project: $projectId
+          )
+        }
+      
+
+### JoinUserWorkspaceInvitesMutation
+        mutation JoinUserWorkspaceInvitesMutation(
+            $invitationIds: [String!]!
+        ) {
+            joinUserWorkspaceInvites(
+                invitationIds: $invitationIds
+            )
+        }
+      
+
+### LabelsQuery
+      query LabelsQuery(
+        $slug: String!,
+        $project: ID!
+      ) {
+        labels(
+          slug: $slug, 
+          project: $project
+        ){
+          color
+          id
+          name
+        }
+      }
+
+### LastWorkspaceMutation
+        mutation LastWorkspaceMutation($workspace: ID!) {
+          updateLastWorkspace(workspace: $workspace)
+        }
+      
+
+### Module
+      query Module(
+        $slug: String!, 
+        $project: ID!,
+        $module: ID!
+        ) {
+        module (
+        slug: $slug, 
+        project: $project, 
+        module: $module,
+        ) {
+        name
+        status
+        id
+        project
+        workspace
+        totalIssues
+        completedIssues
+        createdBy
+        updatedBy
+        createdAt
+        updatedAt
+        description
+        descriptionText
+        descriptionHtml
+        startDate
+        targetDate
+        lead {
+          id
+          displayName
+          avatarUrl
+        }
+        members
+        viewProps
+        sortOrder
+        externalSource
+        externalId
+        archivedAt
+        logoProps
+        isFavorite
+        } 
+      }
+    
+
+### ModuleFavoriteMutation
+        mutation ModuleFavoriteMutation (
+          $slug: String!, 
+          $project: ID!, 
+          $module: ID!,
+        ) {
+          favoriteModule (
+            slug: $slug,
+            project: $project,
+            module: $module
+          )
+        }
+    
+
+### ModuleIssueUserPropertiesQuery
+      query ModuleIssueUserPropertiesQuery(
+          $slug: String!, 
+          $project: ID!, 
+          $module: ID!, 
+        ) {
+        moduleIssueUserProperties(
+            slug: $slug, 
+            project: $project
+            module: $module
+          ) {
+            displayFilters
+            displayProperties
+            filters
+            id
+          }
+        }
+      
+
+### ModuleIssues
+        query ModuleIssues(
+            $slug: String!, 
+            $project: ID!, 
+            $module: ID!, 
+            $cursor: String,
+            $filters: JSON,
+            $orderBy: String
+          ) {
+            moduleIssues(
+                slug: $slug, 
+                project: $project, 
+                module: $module, 
+                cursor: $cursor,
+                filters: $filters,
+                orderBy: $orderBy
+              ) {
+                nextCursor
+                nextPageResults
+                count
+                totalCount
+                results {
+                    id
+                    state
+                    name
+                    priority
+                    startDate
+                    targetDate
+                    sequenceId
+                    assignees
+                    labels
+                    workspace
+                    project
+                    sequenceId
+                }
+            }
+        }
+      
+
+### ModuleUnFavoriteMutation
+        mutation ModuleUnFavoriteMutation (
+          $slug: String!, 
+          $project: ID!, 
+          $module: ID!,
+        ) {
+          unFavoriteModule (
+            slug: $slug,
+            project: $project,
+            module: $module
+          )
+        }
+    
+
+### Modules
+      query Modules (
+        $slug: String!, 
+          $project: ID!, 
+          $ids: [ID!],
+          $cursor: String
+      ) {
+        modules (
+          slug: $slug, 
+          project: $project, 
+          ids: $ids,
+          cursor: $cursor
+        ) {
+          results {
+            name
+            id
+          }
+        }
+      }
+    
+
+### NestedChildArchivePagesMutation
+      mutation NestedChildArchivePagesMutation(
+        $slug: String!,
+        $page: ID!,
+        $project: ID!,
+      ) {
+        nestedChildArchivePages(slug:$slug, project: $project, page: $page){
+        }
+      }
+    
+
+### NestedChildDeletePagesMutation
+      mutation NestedChildDeletePagesMutation(
+        $slug: String!,
+        $pages: [ID!]!,
+        $project: ID!,
+      ) {
+        nestedChildDeletePages(slug:$slug, project: $project, pages: $pages)
+      }
+    
+
+### NestedChildRestorePagesMutation
+      mutation NestedChildRestorePagesMutation(
+        $slug: String!,
+        $page: ID!,
+        $project: ID!,
+      ) {
+        nestedChildRestorePages(slug:$slug, project: $project, page: $page){}
+      }
+    
+
+### NotificationCountQuery
+        query NotificationCountQuery {
+          notificationCount {
+              unread
+              workspaces {
+                id
+                slug
+                unread
+              }
+          }
+        }
+      
+
+### NotificationsQuery
+        query NotificationsQuery(
+          $slug: String!,
+          $cursor: String!,
+          $read: String,
+          $type: JSON,
+          $snoozed: Boolean,
+          $archived: Boolean,
+          $mentioned: Boolean
+        ) {
+          notifications(
+            slug: $slug,
+            cursor: $cursor,
+            read: $read,
+            type: $type,
+            snoozed: $snoozed,
+            archived: $archived,
+            mentioned: $mentioned
+          ) {
+            prevCursor
+            cursor
+            nextCursor
+            prevPageResults
+            nextPageResults
+            count
+            totalCount
+            results {
+              id
+              title
+              triggeredBy {
+                id
+                firstName
+                displayName
+              }
+              readAt
+              isMentionedNotification
+              data
+              project {
+                id
+                identifier
+              }
+              createdAt
+              
+
+### PageMutation
+      mutation PageMutation(
+        $slug: String!,
+        $id: ID!,
+        $project: ID!,
+        $name: String,
+      ) {
+        updatePage(slug:$slug, project: $project, id: $id, name: $name) {
+          name
+        }
+      }
+    
+
+### PageQuery
+      query PageQuery (
+        $slug: String!,
+        $project: ID!,
+        $page: ID!
+      ) {
+        page(
+          slug: $slug
+          project: $project
+          page: $page
+        ) {
+            id
+            name
+            descriptionHtml
+            logoProps
+            ownedBy
+            access
+            isFavorite
+            projects
+            isLocked
+            archivedAt
+            
+
+### ProfileMutation
+        mutation ProfileMutation($autoSetTimeZone: Boolean!) {
+          updateProfile(
+            mobileTimezoneAutoSet: $autoSetTimeZone
+          ) {
+            mobileTimezoneAutoSet
+          }
+        }
+      *
+
+### ProjectAssetEntityMutation
+      mutation ProjectAssetEntityMutation(
+      $slug: String!,
+      $project: ID!,
+      $assetIds: [ID!]!
+      $entityId: ID!
+      ) {
+        updateProjectAssetEntity (
+            slug: $slug,
+            project: $project,
+            assetIds: $assetIds
+            entityId: $entityId
+        )
+      }
+    .
+
+### ProjectAssetQuery
+      query ProjectAssetQuery(
+      $slug: String!,
+      $project: ID!,
+      $assetId: ID!
+      ) {
+        projectAsset(
+          slug: $slug,
+          project: $project,
+          assetId: $assetId
+        )
+      }
+    
+
+### ProjectCoversQuery
+        query ProjectCoversQuery (
+          $slug: String!,
+        ) {
+            projectCovers (
+              slug: $slug
+            ) {
+                urls
+              }
+          }
+      
+
+### ProjectMembersQuery
+      query ProjectMembersQuery(
+        $slug: String!,
+        $project: ID!,
+      ) {
+        projectMembers(
+          slug: $slug, 
+          project: $project
+        ){
+          id
+          member
+        }
+      }
+      
+
+### ProjectPageCommentRepliesQuery
+      query ProjectPageCommentRepliesQuery(
+        $slug: String!,
+        $page: String!,
+        $comment: String!,
+        $cursor: String!,
+        $project: String!,
+      ) {
+        pageCommentReplies(
+          slug: $slug,
+          page: $page,
+          comment: $comment,
+          cursor: $cursor,
+          project: $project
+        ) 
+
+### ProjectPageCommentsMutation
+        mutation ProjectPageCommentsMutation(
+          $slug: String!
+          $project: String!
+          $page: String!
+          $comment: String!
+        ) {
+          unResolvePageComment(
+            slug: $slug,
+            project: $project,
+            page: $page,
+            comment: $comment
+          ){}
+        }
+      
+
+### ProjectPageCommentsQuery
+      query ProjectPageCommentsQuery(
+        $slug: String!,
+        $page: String!,
+        $cursor: String!,
+        $project: String!,
+      ) {
+        pageComments(
+          slug: $slug,
+          page: $page,
+          cursor: $cursor,
+          project: $project
+        ) 
+
+### ProjectPageMentionQuery
+        query ProjectPageMentionQuery(
+          $slug: String!,
+          $project: String!,
+          $page: String!,
+          $entityName: [PageMentionEntityNameEnum!],
+        ) {
+          projectPageMentions(slug: $slug, project: $project, page: $page, entityName: $entityName) {
+              id
+  entityName
+  entityIdentifier
+  workitem {
+      id
+  name
+  sequenceId
+  projectId
+  projectIdentifier
+  stateGroup
+  stateName
+
+  }
+          }
+        }
+
+### ProjectParentPagesQuery
+      query ProjectParentPagesQuery($slug: String!, $project: ID!, $page: ID!) {
+        nestedParentPages (slug: $slug, project: $project, page: $page) {
+        id
+        name
+        access
+        logoProps
+        isLocked
+        archivedAt
+        ownedBy
+        projects
+        }
+      }
+      
+
+### ProjectQuery
+      query ProjectQuery(
+        $slug: String!,
+        $project: ID!
+      ) {
+        project(
+          slug: $slug, 
+          project: $project
+        ){
+          identifier
+        }
+      }
+
+### ProjectSubPagesQuery
+      query ProjectSubPagesQuery($slug: String!, $project: ID!, $page: ID!) {
+        nestedChildPages (slug: $slug, project: $project, page: $page) {
+        id
+        name
+        access
+        logoProps
+        isLocked
+        archivedAt
+        deletedAt
+        isDescriptionEmpty
+        ownedBy
+        projects
+        }
+      }
+      
+
+### ProjectsQuery
+      query ProjectsQuery (
+        $slug: String!,
+        $type: String,
+        $cursor: String,
+        $projects: JSON
+      ) {
+        projects(
+          slug: $slug
+          type: $type
+          cursor:$cursor
+          projects: $projects
+        ) {
+          cursor
+          nextCursor
+          nextPageResults
+          results {
+            id
+            name
+            description
+            workspace
+            identifier
+            logoProps
+            isFavorite
+            network
+            isMember
+            totalActiveIssues
+            role
+          }
+        }
+      }
+    
+
+### PublicWorkspaceInviteMutation
+        mutation PublicWorkspaceInviteMutation(
+            $invitationId: String!
+            $email: String!
+        ) {
+            acceptPublicWorkspaceInvite(
+                invitationId: $invitationId
+                email: $email
+            )
+        }
+      
+
+### PublicWorkspaceInviteQuery
+    query PublicWorkspaceInviteQuery(
+        $invitationId: String!
+        $email: String!
+    ) {
+        publicUserWorkspaceInvite(
+            invitationId: $invitationId
+            email: $email
+        ) {
+            id
+            email
+            accepted
+            token
+            message
+            respondedAt
+            role
+            workspace {
+                id
+                name
+                slug
+                logo
+                logoUrl
+                owner
+                role
+                organizationSize
+                deletedAt
+            } 
+        }
+    }
+  
+
+### PublicWorkspaceInviteV2Mutation
+        mutation PublicWorkspaceInviteV2Mutation(
+            $invitationId: String!
+            $slug: String!
+            $token: String
+        ) {
+            acceptPublicWorkspaceInviteV2(
+                invitationId: $invitationId
+                slug: $slug
+                token: $token
+            )
+        }
+      
+
+### PublicWorkspaceInviteV2Query
+    query PublicWorkspaceInviteV2Query(
+        $invitationId: String!
+        $slug: String!
+        $token: String
+    ) {
+        publicUserWorkspaceInviteV2(
+            invitationId: $invitationId
+            slug: $slug
+            token: $token
+        ) {
+            id
+            email
+            accepted
+            token
+            message
+            respondedAt
+            role
+            workspace {
+                id
+                name
+                slug
+                logo
+                logoUrl
+                owner
+                role
+                organizationSize
+                deletedAt
+            } 
+        }
+    }
+  
+
+### SetPasswordMutation
+        mutation SetPasswordMutation(
+            $passwordInput: PasswordInputType!
+        ) {
+            setPassword(
+                passwordInput: $passwordInput
+            )
+        }
+      
+
+### StatesQuery
+      query StatesQuery(
+        $slug: String!,
+        $project: ID!
+      ) {
+        states(
+          slug: $slug, 
+          project: $project
+        ){
+          color
+          default
+          group
+          id
+          name
+          
+
+### SubIssueMutation
+        mutation SubIssueMutation(
+          $slug: String!,
+          $project: ID!,
+          $parentIssueId: ID!,
+          $subIssueIds: [ID!]!,
+        ) {
+          createSubIssue(
+            slug: $slug, 
+            project: $project,
+            parentIssueId: $parentIssueId,
+            subIssueIds: $subIssueIds,
+          )
+        }
+      
+
+### SubIssueQuery
+        query SubIssueQuery(
+            $slug: String!, 
+            $project: ID!, 
+            $issue: ID!,
+            $cursor: String!,
+          ) {
+            subIssues(
+                slug: $slug, 
+                project: $project,
+                issue: $issue,
+                cursor: $cursor,
+              ) {
+                prevCursor
+                cursor
+                nextCursor
+                prevPageResults
+                nextPageResults
+                count
+                totalCount
+                results {
+                    id
+                    parent
+                    state
+                    point
+                    estimatePoint
+                    name
+                    priority
+                    startDate
+                    targetDate
+                    sequenceId
+                    assignees
+                    labels
+                    workspace
+                    project
+                    sequenceId
+                }
+            }
+        }
+      
+
+### TeamspaceMembersByProjectQuery
+      query TeamspaceMembersByProjectQuery(
+        $slug: String!,
+        $project: String!,
+      ) {
+        teamspaceMembersByProject(
+          slug: $slug, 
+          project: $project
+        ){
+          id
+          member
+        }
+      }
+      
+
+### TimezoneListQuery
+      query TimezoneListQuery {
+        timezoneList {
+          value,
+          query,
+          label
+        }
+      }
+    Z
+
+### ToursQuery
+        query ToursQuery {
+          tours {
+            homeTour
+          }
+        }
+      
+
+### UnFavoritePage
+      mutation UnFavoritePage(
+        $slug: String!, 
+        $page: ID!,
+        $project: ID!,
+      )  {
+        unFavoritePage(
+          slug: $slug, 
+          page: $page,
+          project: $project,
+        )
+      }
+    
+
+### UnsplashImagesQuery
+          query UnsplashImagesQuery (
+          $slug: String!,
+          $query: String
+          ) {
+            unsplashImages (
+              slug: $slug,
+              query: $query
+          ) {
+              urls 
+              {
+                regular
+                small
+              }
+            }
+          }
+      
+
+### UpdateCycleUserPropertiesMutation
+      mutation UpdateCycleUserPropertiesMutation(
+          $slug: String!, 
+          $project: ID!, 
+          $cycle: ID!, 
+          $filters: JSON!, 
+          $displayFilters: JSON!, 
+          $displayProperties: JSON!, 
+        ) {
+          updateCycleUserProperties(
+            slug: $slug, 
+            project: $project,    
+            cycle: $cycle,    
+            filters: $filters,
+            displayFilters: $displayFilters,
+            displayProperties: $displayProperties
+          ){
+            displayFilters
+            displayProperties
+            filters
+            id
+            project
+            user
+            workspace
+          }
+      }
+      
+
+### UpdateEpicsUserPropertiesMutation
+      mutation UpdateEpicsUserPropertiesMutation(
+          $slug: String!, 
+          $project: String!, 
+          $userProperties: EpicUserPropertyCreateInputType!, 
+        ) {
+          updateEpicUserProperties(
+            slug: $slug, 
+            project: $project,    
+            userProperties: $userProperties,
+          ){
+            displayFilters
+            displayProperties
+            filters
+            id
+            project
+            user
+            workspace
+          }
+      }
+      
+
+### UpdateInitiativeMutation
+      mutation UpdateInitiativeMutation (
+          $slug: String!
+          $initiative: String!
+          $input: InitiativeUpdateInput!
+      ) {
+          updateInitiative (
+              slug: $slug
+              initiative: $initiative
+              input: $input
+          ) {
+                id
+  name
+  descriptionHtml
+  lead
+  startDate
+  endDate
+  logoProps
+  state
+  labels
+  workspace
+  createdAt
+  updatedAt
+  createdBy
+  updatedBy
+  projects
+  epics
+  progress {
+      analytics {
+        backlog
+        unstarted
+        started
+        completed
+        cancelled
+      }
+      projects {
+          id
+          analytics {
+              backlog
+              unstarted
+              started
+              completed
+              cancelled
+          }
+      }
+      epics {
+          id
+          analytics {
+              backlog
+              unstarted
+              started
+              completed
+              cancelled
+          }
+      }
+  }
+
+          }
+      }
+    
+
+### UpdateInitiativeUserPropertyMutation
+      mutation UpdateInitiativeUserPropertyMutation (
+          $slug: String!
+          $input: InitiativeUserPropertyInput!
+      ) {
+          updateInitiativeUserProperty (
+              slug: $slug
+              input: $input
+          ) {
+              id
+              filters
+              displayFilters
+              workspace
+              user
+              createdAt
+              updatedAt
+              createdBy
+              updatedBy
+          }
+      }
+    
+
+### UpdateIssueAttachmentMutation
+      mutation UpdateIssueAttachmentMutation(
+        $slug: String!,
+        $project: ID!,
+        $issue: ID!,
+        $attachment: ID!,
+      ) {
+        updateIssueAttachment (
+            slug: $slug,
+            project: $project,
+            issue: $issue,
+            attachment: $attachment
+        ) {
+          id
+          assetUrl
+        }
+      }
+    
+
+### UpdateMobileOnboardedMutation
+        mutation UpdateMobileOnboardedMutation($profileInput: ProfileUpdateInputType!) {
+          updateProfileV2(
+            profileInput: $profileInput
+          ) {
+            isMobileOnboarded
+          }
+        }
+      
+
+### UpdateModuleUserPropertiesMutation
+      mutation UpdateModuleUserPropertiesMutation(
+          $slug: String!, 
+          $project: ID!, 
+          $module: ID!, 
+          $filters: JSON!, 
+          $displayFilters: JSON!, 
+          $displayProperties: JSON!, 
+        ) {
+          updateModuleUserProperties(
+            slug: $slug, 
+            project: $project,    
+            module: $module,    
+            filters: $filters,
+            displayFilters: $displayFilters,
+            displayProperties: $displayProperties
+          ){
+            displayFilters
+            displayProperties
+            filters
+            id
+            project
+            user
+            workspace
+          }
+      }
+      
+
+### UpdateProjectAssetMutation
+      mutation UpdateProjectAssetMutation(
+        $slug: String!,
+        $project: ID!,
+        $assetId: ID!,
+      ) {
+        updateProjectAsset (
+            slug: $slug,
+            project: $project,
+            assetId: $assetId
+        )
+      }
+    
+
+### UpdateUserPropertiesMutation
+      mutation UpdateUserPropertiesMutation(
+          $slug: String!, 
+          $project: ID!, 
+          $filters: JSON!, 
+          $displayFilters: JSON!, 
+          $displayProperties: JSON!, 
+        ) {
+          updateUserProperties(
+            slug: $slug, 
+            project: $project,    
+            filters: $filters,
+            displayFilters: $displayFilters,
+            displayProperties: $displayProperties
+          ){
+            displayFilters
+            displayProperties
+            filters
+            id
+            project
+            user
+            workspace
+          }
+      }
+      
+
+### UpdateWorkspaceAssetEntityMutation
+      mutation UpdateWorkspaceAssetEntityMutation(
+      $slug: String!,
+      $assetIds: [ID!]!
+      $entityId: ID!
+      ) {
+        updateWorkspaceAssetEntity (
+            slug: $slug,
+            assetIds: $assetIds
+            entityId: $entityId
+        )
+      }
+    
+
+### UserAssetMutation
+      mutation UserAssetMutation(
+        $name: String!,
+        $type: String!,
+        $size: Int!,
+        $entityType: UserAssetEnumType!
+      ) {
+        createUserAsset(
+          name: $name,
+          type: $type,
+          size: $size,
+          entityType: $entityType
+        ) {
+          uploadData
+          assetId
+          assetUrl
+        }
+      }
+    
+
+### UserDeleteMutation
+          mutation UserDeleteMutation (
+            $deleteInput: UserDeleteInputType!
+          ) {  
+              userDelete (
+                deleteInput: $deleteInput
+              )
+            }
+
+
+### UserDeleteQuery
+          query UserDeleteQuery {  
+            userDelete {
+              canDelete
+              workspaces {
+                name
+              }
+            }
+          }
+      
+
+### UserFavoriteMutation
+        mutation UserFavoriteMutation(
+          $slug: String!, 
+          $favorite: ID!
+        ) 
+        {
+          deleteUserFavorite(
+            slug: $slug, 
+            favorite: $favorite
+          )
+        }
+      
+
+### UserFavoritesQuery
+        query UserFavoritesQuery(
+          $slug: String!, 
+          $limit: Int!) 
+        {
+          userFavorites (
+            slug: $slug,
+            limit: $limit
+          ) {
+          id
+          entityType
+          project
+          entityData {
+            id
+            name
+            logoProps
+          }
+          
+
+### UserRecentVisitQuery
+        query UserRecentVisitQuery(
+          $slug: String!, 
+          $limit: Int
+        ) {
+          userRecentVisit (
+            slug: $slug,
+            limit: $limit
+          ) {
+          id
+          entityName
+          project
+          entityData {
+            id
+            name
+            logoProps
+            
+
+### UserUpdate
+      mutation UserUpdate(
+        $firstName: String,
+        $lastName: String,
+        $displayName: String,
+        $userTimezone: String,
+        $coverImage: String,
+      ) {  
+        updateUser (
+            firstName: $firstName,
+            lastName: $lastName,
+            displayName: $displayName,
+            userTimezone: $userTimezone,
+            coverImage: $coverImage,
+        ) {
+            id
+            username
+            email
+            avatarUrl
+            coverImageUrl
+            dateJoined
+            displayName
+            email
+            firstName
+            lastName
+            isActive
+            userTimezone
+            username
+          }
+        }
+    
+
+### VersionCheckQuery
+      query VersionCheckQuery(
+        $platform: String!,
+      ) {
+          versionCheck (platform: $platform) {
+              version
+              minSupportedVersion
+              minSupportedBackendVersion
+          }
+      }
+
+### WorkItemCommentReactionMutation
+        mutation WorkItemCommentReactionMutation(
+          $slug: String!
+          $project: String!
+          $workItem: String!
+          $comment: String!
+          $reactionInput: CommentReactionInput!
+        ) {
+          removeWorkItemCommentReaction(
+            slug: $slug
+            project: $project
+            workItem: $workItem
+            comment: $comment
+            reactionInput: $reactionInput
+          ) {
+            reaction
+            userIds
+          }
+        }
+      l
+
+### WorkItemCommentReactionQuery
+    query WorkItemCommentReactionQuery(
+      $slug: String!
+      $project: String!
+      $workItem: String!
+      $comment: String!
+    ) {
+      workItemCommentReactions(
+        slug: $slug
+        project: $project
+        workItem: $workItem
+        comment: $comment
+      ) {
+        reaction
+        userIds
+      }
+    }
+  
+
+### WorkItemCommentReplyMutation
+        mutation WorkItemCommentReplyMutation(
+          $slug: String!,
+          $project: String!,
+          $workItem: String!,
+          $comment: String!,
+          $commentHtml: String!
+        ) {
+          addWorkItemCommentReply(slug:$slug, project:$project, workItem:$workItem, comment:$comment, commentHtml:$commentHtml){
+            id
+          }
+        }
+      
+
+### WorkItemPageMutation
+      mutation WorkItemPageMutation (
+        $slug: String!
+        $project: String!
+        $workItem: String!
+        $pageIds: [String!]!
+    ) {
+        addWorkItemPage (
+            slug: $slug
+            project: $project
+            workItem: $workItem
+            pageIds: $pageIds
+        ) {
+            id
+            name 
+            logoProps
+            isGlobal
+            access
+        }
+    }
+    
+
+### WorkItemPageQuery
+      query WorkItemPageQuery (
+        $slug: String!
+        $project: String!
+        $workItem: String!
+    ) {
+        workItemPages (
+            slug: $slug
+            project: $project
+            workItem: $workItem
+        ) {
+            id
+            name 
+            logoProps
+            isGlobal
+            access
+        }
+    }
+    
+
+### WorkItemPageSearchQuery
+      query WorkItemPageSearchQuery (
+        $slug: String!
+        $project: String!
+        $workItem: String!
+        $search: String!
+        $isGlobal: Boolean!
+    ) {
+        searchWorkItemPages (
+            slug: $slug
+            project: $project
+            workItem: $workItem
+            search: $search
+            isGlobal: $isGlobal
+        ) {
+            id
+            name 
+            logoProps
+            isGlobal
+            access
+        }
+    }
+    
+
+### WorkspaceAssetMutation
+      mutation WorkspaceAssetMutation(
+      $slug: String!,
+      $assetId: ID!
+      ) {
+        updateWorkspaceAsset (
+            slug: $slug,
+            assetId: $assetId
+        )
+      }
+    n
+
+### WorkspaceAssetQuery
+      query WorkspaceAssetQuery(
+      $slug: String!,
+      $assetId: ID!
+      ) {
+        workspaceAsset(
+          slug: $slug,
+          assetId: $assetId
+        )
+      }
+    
+
+### WorkspaceFeatureQuery
+      query WorkspaceFeatureQuery($slug: String!) {
+        workspaceFeatures(slug: $slug) {
+          isInitiativeEnabled
+        }
+      }
+      
+
+### WorkspaceInviteQuery
+    query WorkspaceInviteQuery {
+    userWorkspaceInvites {
+        id
+        email
+        accepted
+        token
+        message
+        respondedAt
+        role
+        workspace {
+            id
+            name
+            slug
+            logo
+            logoUrl
+            owner
+            role
+            organizationSize
+        } 
+    }
+  }
+  
+
+### WorkspaceIssuesQuery
+        query WorkspaceIssuesQuery(
+            $slug: String!, 
+            $cursor: String,
+            $filters: JSON,
+          ) {
+            workspaceIssues(
+                slug: $slug, 
+                cursor: $cursor,
+                filters: $filters,
+              ) {
+                prevCursor
+                cursor
+                nextCursor
+                prevPageResults
+                nextPageResults
+                count
+                totalCount
+                results {
+                    id
+                    parent
+                    state
+                    point
+                    estimatePoint
+                    name
+                    priority
+                    startDate
+                    targetDate
+                    sequenceId
+                    assignees
+                    labels
+                    workspace
+                    project
+                    projectIdentifier
+                    sequenceId
+                }
+            }
+        }
+      
+
+### WorkspaceLabelsQuery
+        query WorkspaceLabelsQuery($slug: String!) {
+          workspaceLabels(slug: $slug) {
+            color
+            id
+            name
+          }
+        }
+
+### WorkspaceLicenseQuery
+      query WorkspaceLicenseQuery (
+          $slug: String!
+      ) {
+          workspaceLicense (
+              slug: $slug
+          ) { 
+              isFreeMemberCountExceeded
+          }
+      }
+      
+
+### WorkspaceMembersQuery
+      query WorkspaceMembersQuery($slug: String!) {
+        workspaceMembers(slug: $slug){
+          id
+          member {
+            id
+            firstName
+            lastName
+            avatarUrl
+            displayName
+          }
+        }
+      }
+
+### WorkspaceNestedChildArchivePagesMutation
+      mutation WorkspaceNestedChildArchivePagesMutation(
+        $slug: String!,
+        $page: ID!,
+      ) {
+        workspaceNestedChildArchivePages(slug:$slug, page: $page){}
+      }
+    
+
+### WorkspaceNestedChildDeletePagesMutation
+      mutation WorkspaceNestedChildDeletePagesMutation(
+        $slug: String!,
+        $pages: [ID!]!,
+      ) {
+        workspaceNestedChildDeletePages(slug:$slug, pages: $pages)
+      }
+    
+
+### WorkspaceNestedParentPages
+      query WorkspaceNestedParentPages($slug: String!, $page: ID!) {
+        workspaceNestedParentPages (slug: $slug, page: $page) {
+        id
+        name
+        access
+        logoProps
+        isLocked
+        archivedAt
+        deletedAt
+        isDescriptionEmpty
+        ownedBy
+        projects
+        }
+      }
+      
+
+### WorkspacePageCommentRepliesQuery
+      query WorkspacePageCommentRepliesQuery(
+        $slug: String!,
+        $page: String!,
+        $comment: String!,
+        $cursor: String!,
+      ) {
+        workspacePageCommentReplies(
+          slug: $slug,
+          page: $page,
+          comment: $comment,
+          cursor: $cursor,
+        ) 
+
+### WorkspacePageCommentsMutation
+        mutation WorkspacePageCommentsMutation(
+          $slug: String!
+          $page: String!
+          $comment: String!
+        ) {
+          workspaceUnResolvePageComment(
+            slug: $slug,
+            page: $page,
+            comment: $comment
+          ){}
+        }
+      
+
+### WorkspacePageCommentsQuery
+      query WorkspacePageCommentsQuery(
+        $slug: String!,
+        $page: String!,
+        $project: String!,
+        $commentIds: [String!]!,
+      ) {
+        pageCommentsWithIds(
+          slug: $slug,
+          page: $page,
+          project: $project,
+          commentIds: $commentIds,
+        ) {
+              id
+    createdBy
+    description {
+      descriptionHtml
+    }
+    isResolved
+        latestReply {
+      id
+      createdBy
+      description {
+        descriptionHtml
+      }
+      updatedAt
+    }
+    parent
+    referenceStripped
+    totalReplies
+    updatedAt
+    
+        }
+      }
+    
+
+### WorkspacePageMentionQuery
+        query WorkspacePageMentionQuery(
+          $slug: String!,
+          $page: String!,
+          $entityName: [PageMentionEntityNameEnum!],
+        ) {
+          workspacePageMentions(slug: $slug, page: $page, entityName: $entityName) {
+              id
+  entityName
+  entityIdentifier
+  workitem {
+      id
+  name
+  sequenceId
+  projectId
+  projectIdentifier
+  stateGroup
+  stateName
+
+  }
+          }
+        }
+
+### WorkspacePageMutation
+      mutation WorkspacePageMutation(
+        $slug: String!,
+        $id: ID!,
+        $name: String,
+      ) {
+        updateWorkspacePage(slug:$slug, id: $id, name: $name) {
+          name
+        }
+      }
+    
+
+### WorkspacePageQuery
+      query WorkspacePageQuery (
+        $slug: String!,
+        $page: ID!
+      ) {
+        workspacePage(
+          slug: $slug
+          page: $page
+        ) {
+            id
+            name
+            descriptionHtml
+            logoProps
+            ownedBy
+            access
+            isFavorite
+            projects
+            
+
+### WorkspaceSlugCheckMutation
+      mutation WorkspaceSlugCheckMutation(
+          $workspaceSlugInput: WorkspaceSlugVerificationInputType!
+      ) {
+          workspaceSlugCheck(
+              workspaceSlugInput: $workspaceSlugInput
+          )
+      }
+      
+
+### WorkspaceStatesQuery
+      query WorkspaceStatesQuery($slug: String!) {
+        workspaceStates(slug: $slug){
+          color
+          default
+          group
+          id
+          name
+          
+
+### WorkspaceStickiesMutation
+        mutation WorkspaceStickiesMutation($slug: String!, $sticky: ID!, $stickyData: StickyCreateUpdateInputType!) {
+          updateSticky(slug: $slug, sticky: $sticky, stickyData: $stickyData) {
+            id
+            descriptionHtml
+            descriptionStripped
+            backgroundColor
+          }
+        }
+      
+
+### WorkspaceStickiesQuery
+        query WorkspaceStickiesQuery(
+          $slug: String!
+          $cursor: String!
+        ) {
+          stickies(
+            slug: $slug
+            cursor: $cursor
+          ) {
+              cursor
+              nextCursor
+              nextPageResults
+              results {
+                id
+                descriptionHtml
+                descriptionStripped
+                color
+                backgroundColor
+              }
+          }
+      }
+      
+
+### WorkspaceSubPagesQuery
+      query WorkspaceSubPagesQuery($slug: String!, $page: ID!) {
+        workspaceNestedChildPages (slug: $slug, page: $page) {
+        id
+        name
+        access
+        logoProps
+        isLocked
+        archivedAt
+        deletedAt
+        isDescriptionEmpty
+        ownedBy
+        projects
+        }
+      }
+      
+
+### WorkspaceWorkItemMentionQuery
+        query WorkspaceWorkItemMentionQuery(
+          $slug: String!,
+          $workitem: String!,
+        ) {
+          workspaceWorkItemMention(slug: $slug, workitem: $workitem) {
+              id
+  name
+  sequenceId
+  projectId
+  projectIdentifier
+  stateGroup
+  stateName
+
+          }
+        }
+      
+
+### WorkspacesQuery
+        query WorkspacesQuery {
+          workspaces {
+            id
+            name
+            slug
+            logoUrl
+            owner
+            role
+          }
+        }
+      
+
+### YourWorkQuery
+        query YourWorkQuery($slug: String!) {
+          yourWork(
+            slug: $slug, 
+          ) 
+        {
+          projects
+          issues
+          pages
+        }
+      }
+      
+
+### userInformationAndWorkspacesQuery
+      query userInformationAndWorkspacesQuery (
+          $deviceId: String
+      ) {
+          
+
+### workspaceNestedChildRestorePagesMutation
+      mutation workspaceNestedChildRestorePagesMutation(
+        $slug: String!,
+        $page: ID!,
+      ) {
+        workspaceNestedChildRestorePages(slug:$slug, page: $page) {}
+      }
+    
+
