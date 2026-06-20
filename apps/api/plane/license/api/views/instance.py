@@ -31,8 +31,8 @@ class InstanceEndpoint(BaseAPIView):
             return [InstanceAdminPermission()]
         return [AllowAny()]
 
-    @cache_response(60 * 60 * 2, user=False)
     @method_decorator(cache_control(private=True, max_age=12))
+    @cache_response(60 * 60 * 2, user=False)
     def get(self, request):
         instance = Instance.objects.first()
 
@@ -165,6 +165,26 @@ class InstanceEndpoint(BaseAPIView):
 
         data["instance_changelog_url"] = settings.INSTANCE_CHANGELOG_URL
         data["is_self_managed"] = settings.IS_SELF_MANAGED
+
+        # Fields the official mobile app's HostConfigModel reads but the OSS instance
+        # endpoint historically omitted. They are enterprise/Cloud-only and stay
+        # disabled here (true to our deployment); the diagnostic full-Cloud-parity
+        # mirror proved the home-dashboard cold-start gate is NOT in this response, so
+        # we keep only the honest, non-invasive fields (no third-party analytics keys,
+        # no faked edition / service URLs).
+        data["are_access_tokens_disabled"] = False
+        data["is_oidc_enabled"] = False
+        data["oidc_provider_name"] = ""
+        data["is_saml_enabled"] = False
+        data["saml_provider_name"] = ""
+        data["is_ldap_enabled"] = False
+        data["ldap_provider_name"] = ""
+        data["is_chat_support_enabled"] = False
+        data["chat_support_app_id"] = None
+        data["is_opensearch_enabled"] = False
+        data["project_identifier_max_length"] = 10
+        data["is_airgapped"] = False
+        data["enable_turnstile"] = False
 
         instance_data = serializer.data
         instance_data["workspaces_exist"] = Workspace.objects.count() >= 1

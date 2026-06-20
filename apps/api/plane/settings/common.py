@@ -94,6 +94,8 @@ INSTALLED_APPS = [
     "plane.api",
     "plane.iw",
     "plane.authentication",
+    # OVERLAY: mobile-graphql — GraphQL gateway for the native app
+    "plane.graphql",
     # Third-party things
     "rest_framework",
     "corsheaders",
@@ -119,7 +121,12 @@ MIDDLEWARE = [
 
 # Rest Framework settings
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework.authentication.SessionAuthentication",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        # OVERLAY: mobile-auth — Bearer JWT first; returns None without a Bearer
+        # header so the existing session/cookie flow is unaffected.
+        "plane.authentication.mobile.jwt.MobileJWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ),
     "DEFAULT_THROTTLE_CLASSES": ("rest_framework.throttling.AnonRateThrottle",),
     "DEFAULT_THROTTLE_RATES": {
         "anon": "30/minute",

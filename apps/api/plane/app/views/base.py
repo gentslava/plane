@@ -26,6 +26,10 @@ from rest_framework.viewsets import ModelViewSet
 
 # Module imports
 from plane.authentication.session import BaseSessionAuthentication
+
+# OVERLAY: mobile-auth — accept the native app's Bearer JWT on all /api/ endpoints
+# (Plane Cloud accepts SimpleJWT here; the app loads board content with Bearer).
+from plane.authentication.mobile.jwt import MobileJWTAuthentication
 from plane.utils.exception_logger import log_exception
 from plane.utils.paginator import BasePaginator
 from plane.utils.core.mixins import ReadReplicaControlMixin
@@ -52,7 +56,7 @@ class BaseViewSet(TimezoneMixin, ReadReplicaControlMixin, ModelViewSet, BasePagi
 
     filter_backends = (DjangoFilterBackend, SearchFilter)
 
-    authentication_classes = [BaseSessionAuthentication]
+    authentication_classes = [MobileJWTAuthentication, BaseSessionAuthentication]
 
     filterset_fields = []
 
@@ -151,7 +155,7 @@ class BaseAPIView(TimezoneMixin, ReadReplicaControlMixin, APIView, BasePaginator
 
     filter_backends = (DjangoFilterBackend, SearchFilter)
 
-    authentication_classes = [BaseSessionAuthentication]
+    authentication_classes = [MobileJWTAuthentication, BaseSessionAuthentication]
 
     filterset_fields = []
 

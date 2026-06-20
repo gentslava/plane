@@ -14,6 +14,9 @@ from drf_spectacular.views import (
 
 handler404 = "plane.app.views.error_404.custom_404_view"
 
+# OVERLAY: mobile-auth — /m/auth мост для нативного приложения (проксируется Caddy в api)
+from plane.authentication.mobile.views import MAuthBridgeEndpoint
+
 urlpatterns = [
     path("api/", include("plane.app.urls")),
     path("api/public/", include("plane.space.urls")),
@@ -21,6 +24,10 @@ urlpatterns = [
     path("api/v1/", include("plane.api.urls")),
     path("api/v1/", include("plane.iw.urls")),
     path("auth/", include("plane.authentication.urls")),
+    # OVERLAY: mobile-auth
+    path("m/auth", MAuthBridgeEndpoint.as_view(), name="m-auth"),
+    # OVERLAY: mobile-graphql — GraphQL gateway for the native app
+    path("graphql/", include("plane.graphql.urls")),
     path("", include("plane.web.urls")),
 ]
 

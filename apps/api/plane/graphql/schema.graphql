@@ -1,0 +1,2530 @@
+type Query {
+  instance: InstanceType!
+  featureFlag(slug: String!): FeatureFlagType
+  versionCheck(platform: String!, isInternal: Boolean = false): VersionCheckType!
+  unsplashImages(slug: String!, page: Int = 1, perPage: Int = 20, query: String = null): UnsplashImages!
+  projectCovers(slug: String!): ProjectCovers!
+  timezoneList: [TimezoneListType!]!
+  workspaceAsset(slug: String!, assetId: ID!): String!
+  projectAsset(slug: String!, project: ID!, assetId: ID!): String!
+  user: UserType!
+  profile: ProfileType!
+  yourWork(slug: String!): WorkspaceYourWorkType!
+  userFavorites(slug: String!, limit: Int = null): [UserFavoriteType!]!
+  userRecentVisit(slug: String!, limit: Int = null): [UserRecentVisitType!]!
+  userInformation(deviceId: String = null): UserInformationType!
+  userDelete: UserDeleteType!
+  userProjectRoles(slug: String!, project: String!): UserProjectRolesType!
+  notifications(slug: String!, type: JSON = "all", snoozed: Boolean = false, archived: Boolean = false, mentioned: Boolean = null, read: String = null, cursor: String = null): NotificationTypePaginatorResponse!
+  notificationCount: NotificationCountType!
+  globalSearch(slug: String!, project: ID = null, module: ID = null, cycle: ID = null, query: String = null, includeUnjoinedProjects: Boolean = false): GlobalSearchType!
+  workspaceLicense(slug: String!): WorkspaceLicenseType!
+  workspaces: [WorkspaceType!]!
+  workspaceMembers(slug: String!): [WorkspaceMemberType!]!
+  userWorkspaceInvites: [WorkspaceInviteType!]!
+  userWorkspaceInvite(invitationId: String!): WorkspaceInviteType!
+  publicUserWorkspaceInvite(invitationId: String!, email: String!): WorkspaceInviteType!
+  publicUserWorkspaceInviteV2(invitationId: String!, slug: String!, token: String = null): WorkspaceInviteType!
+  workspaceFeatures(slug: String!): WorkspaceFeatureType!
+  favorites(slug: String!, limit: Int = null): [FavoriteType!]!
+  allProjects(slug: String!, type: String = "all"): [ProjectType!]!
+  projects(slug: String!, type: String = "all", cursor: String = null, projects: JSON = null): ProjectTypePaginatorResponse!
+  project(slug: String!, project: ID!): ProjectType
+  projectMembers(slug: String!, project: ID!): [ProjectMemberType!]!
+  projectFeatures(slug: String!, project: String!): ProjectFeatureType!
+  isProjectPublic(slug: String!, project: ID!): ProjectPublicLiteType
+  issueShortenedMetaInfo(slug: String!, workItemIdentifier: String!): IssueShortenedMetaInfo!
+  workspaceIssuesInformation(slug: String!, filters: JSON, groupBy: String = null, orderBy: String = "-created_at"): IssuesInformationType!
+  workspaceIssues(slug: String!, filters: JSON, orderBy: String = "-created_at", cursor: String = null): IssuesTypePaginatorResponse!
+  issuesInformation(slug: String!, project: ID!, filters: JSON, groupBy: String = null, orderBy: String = "-created_at"): IssuesInformationType!
+  issues(slug: String!, project: ID!, filters: JSON, orderBy: String = "-created_at", cursor: String = null, type: String = "all"): IssuesTypePaginatorResponse!
+  issue(slug: String!, project: ID!, issue: ID!): IssuesType!
+  recentIssues(slug: String!): [IssuesType!]!
+  issueUserProperties(slug: String!, project: ID!): IssueUserPropertyType!
+  issuePropertyActivities(slug: String!, project: ID!, issue: ID!): [IssuePropertyActivityType!]!
+  issueCommentActivities(slug: String!, project: ID!, issue: ID!): [IssueCommentActivityType!]!
+  issueLink(slug: String!, project: ID!, issue: ID!): [IssueLinkType!]!
+  issueAttachment(slug: String!, project: ID!, issue: ID!): [FileAssetType!]!
+  issueAttachmentDetail(slug: String!, project: ID!, issue: ID!, attachment: ID!): FileAssetType!
+  subIssues(slug: String!, project: ID!, issue: ID!, cursor: String = null): IssuesTypePaginatorResponse!
+  issueRelation(slug: String!, project: ID!, issue: ID!): IssueRelationType!
+  issuesSearch(slug: String!, project: ID = null, issue: ID = null, cursor: String = null, search: String = null, relationType: Boolean = false, subIssues: Boolean = false, isEpicRelated: Boolean = false, isIntakeRelated: Boolean = false, relationTypeValue: WorkItemRelationTypes = null): IssueLiteTypePaginatorResponse!
+  workItemCommentReactions(slug: String!, project: String!, workItem: String!, comment: String!): [CommentReactionType!]!
+  issueStats(slug: String!, project: String!, issue: String!): IssueStatsType!
+  workspaceWorkItemMention(slug: String!, workitem: String!): WorkItemMentionType!
+  workItemPages(slug: String!, project: String!, workItem: String!): [WorkItemPageType!]!
+  workItemPage(slug: String!, project: String!, workItem: String!, page: String!): WorkItemPageType!
+  searchWorkItemPages(slug: String!, project: String!, workItem: String!, search: String = null, isGlobal: Boolean = false): [WorkItemPageType!]!
+  issueTypes(slug: String!): [IssueTypesType!]!
+  workspaceLabels(slug: String!): [LabelType!]!
+  labels(slug: String!, project: ID!): [LabelType!]!
+  workspaceStates(slug: String!): [StateType!]!
+  states(slug: String!, project: ID!): [StateType!]!
+  triageStates(slug: String!, project: ID!): [StateType!]!
+  estimatePoints(slug: String!, project: ID!): [EstimatePointType!]!
+  cycles(slug: String!, project: ID!, ids: [ID!] = null): [CycleType!]!
+  cycle(slug: String!, project: ID!, cycle: ID!): CycleType!
+  cycleIssuesInformation(slug: String!, project: ID!, cycle: ID!, filters: JSON, groupBy: String = null, orderBy: String = "-created_at"): IssuesInformationType!
+  cycleIssues(slug: String!, project: ID!, cycle: ID!, filters: JSON, orderBy: String = "-created_at", cursor: String = null, type: String = "all"): IssuesTypePaginatorResponse!
+  cycleIssueUserProperties(slug: String!, project: ID!, cycle: ID!): CycleUserPropertyType!
+  modules(slug: String!, project: ID!, cursor: String = null, ids: [ID!] = null): ModuleTypePaginatorResponse!
+  module(slug: String!, project: ID!, module: ID!): ModuleType!
+  moduleIssuesInformation(slug: String!, project: ID!, module: ID!, filters: JSON, groupBy: String = null, orderBy: String = "-created_at"): IssuesInformationType!
+  moduleIssues(slug: String!, project: ID!, module: ID!, filters: JSON, orderBy: String = "-created_at", cursor: String = null, type: String = "all"): IssuesTypePaginatorResponse!
+  moduleIssueUserProperties(slug: String!, project: ID!, module: ID!): ModuleUserPropertyType!
+  workspacePages(slug: String!, cursor: String = null, type: String = "all"): PageTypePaginatorResponse!
+  workspacePage(slug: String!, page: ID!): PageType!
+  workspaceNestedParentPages(slug: String!, page: ID!): [NestedParentPageLiteType!]!
+  workspaceNestedChildPages(slug: String!, page: ID!): [NestedParentPageLiteType!]!
+  userPages(slug: String!, cursor: String = null, type: String = "all"): PageTypePaginatorResponse!
+  pages(slug: String!, project: ID!, cursor: String = null, type: String = "all"): PageTypePaginatorResponse!
+  page(slug: String!, project: ID!, page: ID!): PageType!
+  nestedParentPages(slug: String!, project: ID!, page: ID!): [NestedParentPageLiteType!]!
+  nestedChildPages(slug: String!, project: ID!, page: ID!): [NestedParentPageLiteType!]!
+  pageComments(slug: String!, project: String!, page: String!, cursor: String = null): PageCommentListTypePaginatorResponse!
+  pageCommentsWithIds(slug: String!, project: String!, page: String!, commentIds: [String!]!): [PageCommentListType!]!
+  pageCommentReplies(slug: String!, project: String!, page: String!, comment: String!, cursor: String = null): PageCommentWithReactionsListTypePaginatorResponse!
+  pageComment(slug: String!, project: String!, page: String!, comment: String!): PageCommentType!
+  projectPageCommentReactions(slug: String!, project: String!, page: String!, comment: String!): [PageCommentReactionCountType!]!
+  workspacePageComments(slug: String!, page: String!, cursor: String = null): PageCommentListTypePaginatorResponse!
+  workspacePageCommentsWithIds(slug: String!, page: String!, commentIds: [String!]!): [PageCommentListType!]!
+  workspacePageCommentReplies(slug: String!, page: String!, comment: String!, cursor: String = null): PageCommentWithReactionsListTypePaginatorResponse!
+  workspacePageComment(slug: String!, page: String!, comment: String!): PageCommentType!
+  workspacePageCommentReactions(slug: String!, page: String!, comment: String!): [PageCommentReactionCountType!]!
+  projectPageMentions(slug: String!, project: String!, page: String!, entityName: [PageMentionEntityNameEnum!] = null): [PageMentionType!]!
+  projectPageMention(slug: String!, project: String!, page: String!, mention: String!): PageMentionType!
+  workspacePageMentions(slug: String!, page: String!, entityName: [PageMentionEntityNameEnum!] = null): [PageMentionType!]!
+  workspacePageMention(slug: String!, page: String!, mention: String!): PageMentionType!
+  epicUserProperty(slug: String!, project: String!): EpicUserPropertyType!
+  epicCount(slug: String!, project: String!): EpicCountType!
+  epics(slug: String!, project: String!, filters: JSON, orderBy: String = "-created_at", cursor: String = null): EpicTypePaginatorResponse!
+  epic(slug: String!, project: String!, epic: String!): EpicType!
+  epicLinks(slug: String!, project: String!, epic: String!): [EpicLinkType!]!
+  epicLink(slug: String!, project: String!, epic: String!, link: String!): EpicLinkType!
+  epicAttachments(slug: String!, project: String!, epic: String!): [FileAssetType!]!
+  epicAttachment(slug: String!, project: String!, epic: String!, attachment: String!): FileAssetType!
+  epicWorkItems(slug: String!, project: String!, epic: String!, cursor: String = null): IssuesTypePaginatorResponse!
+  epicRelation(slug: String!, project: String!, epic: String!): EpicRelationType!
+  epicActivities(slug: String!, project: String!, epic: String!): [EpicPropertyActivityType!]!
+  epicComments(slug: String!, project: String!, epic: String!): [EpicCommentActivityType!]!
+  epicCommentReactions(slug: String!, project: String!, epic: String!, comment: String!): [CommentReactionType!]!
+  epicStats(slug: String!, project: String!, epic: String!): EpicStatsType!
+  epicPages(slug: String!, project: String!, epic: String!): [EpicPageType!]!
+  epicPage(slug: String!, project: String!, epic: String!, page: String!): EpicPageType!
+  searchEpicPages(slug: String!, project: String!, epic: String!, search: String = null, isGlobal: Boolean = false): [EpicPageType!]!
+  stickies(slug: String!, cursor: String = null): StickiesTypePaginatorResponse!
+  sticky(slug: String!, sticky: ID!): StickiesType!
+  teamspaceMembersByProject(slug: String!, project: String!): [TeamspaceMemberType!]!
+  intakeCount(slug: String!, project: String!, filters: JSON): IntakeCountType!
+  intakeWorkItems(slug: String!, project: String!, filters: JSON, orderBy: String = "-created_at", cursor: String = null): IntakeWorkItemTypePaginatorResponse!
+  intakeWorkItem(slug: String!, project: String!, intakeWorkItem: String!): IntakeWorkItemType!
+  intakeWorkItemByWorkItem(slug: String!, project: String!, workItem: String!): IntakeWorkItemType!
+  intakeWorkItemActivities(slug: String!, project: String!, intakeWorkItem: String!): [IntakeWorkItemPropertyActivityType!]!
+  intakeWorkItemComments(slug: String!, project: String!, intakeWorkItem: String!): [IntakeWorkItemCommentActivityType!]!
+  intakeWorkItemCommentReactions(slug: String!, project: String!, intakeWorkItem: String!, comment: String!): [CommentReactionType!]!
+  intakeWorkItemAttachments(slug: String!, project: String!, intakeWorkItem: String!): [FileAssetType!]!
+  intakeWorkItemAttachment(slug: String!, project: String!, intakeWorkItem: String!, attachment: String!): FileAssetType!
+  intakeSearch(slug: String!, project: String!, search: String = null, cursor: String = null): IntakeWorkItemTypePaginatorResponse!
+  intakeStats(slug: String!, project: String!, intakeWorkItem: String!): IntakeStatsType!
+  catchUps(slug: String!): [CatchUpType!]!
+  initiativeLabels(slug: String!): [InitiativeLabelType!]!
+  initiativeLabel(slug: String!, label: String!): InitiativeLabelType!
+  initiativesCount(slug: String!): InitiativeCountType!
+  initiativeInformation(slug: String!): InitiativeInformationType!
+  initiatives(slug: String!, filters: InitiativesFiltersInput = null, groupBy: String = null, orderBy: String = "-updated_at", cursor: String = null): InitiativeTypePaginatorResponse!
+  initiative(slug: String!, initiative: String!): InitiativeType!
+  initiativeActivities(slug: String!, initiative: String!): [InitiativeActivityType!]!
+  initiativeReactions(slug: String!, initiative: String!): [InitiativeReactionType!]!
+  initiativeComments(slug: String!, initiative: String!): [InitiativeCommentType!]!
+  initiativeComment(slug: String!, initiative: String!, comment: String!): InitiativeCommentType!
+  initiativeCommentReactions(slug: String!, initiative: String!, comment: String!): [InitiativeCommentReactionType!]!
+  initiativeUserProperty(slug: String!): InitiativeUserPropertyType!
+  initiativeLinks(slug: String!, initiative: String!): [InitiativeLinkType!]!
+  initiativeLink(slug: String!, initiative: String!, link: String!): InitiativeLinkType!
+  initiativeProjectsSearch(slug: String!, initiative: String!, input: InitiativeProjectSearchInput!): [InitiativeProjectSearchType!]!
+  initiativeProjects(slug: String!, initiative: String!): [InitiativeProjectType!]!
+  initiativeEpicsSearch(slug: String!, initiative: String!, input: InitiativeEpicSearchInput!): [InitiativeEpicSearchType!]!
+  initiativeEpics(slug: String!, initiative: String!): [InitiativeEpicType!]!
+  initiativeAttachments(slug: String!, initiative: String!): [InitiativeAttachmentType!]!
+  initiativeAttachment(slug: String!, initiative: String!, attachment: String!): InitiativeAttachmentType!
+  initiativeAttachmentPresignedUrl(slug: String!, initiative: String!, attachment: String!): String!
+  archivedInitiatives(slug: String!, filters: ArchivedInitiativesFiltersInput = null, orderBy: String = "-updated_at", cursor: String = null): InitiativeTypePaginatorResponse!
+  collections(slug: String!, cursor: String = null): CollectionTypePaginatorResponse!
+  collection(slug: String!, collection: String!): CollectionType!
+  collectionSearch(slug: String!, query: String!): [CollectionType!]!
+  collectionPages(slug: String!, collection: String!, cursor: String = null): CollectionPageTypePaginatorResponse!
+  collectionPage(slug: String!, collection: String!, page: String!): CollectionPageType!
+  collectionMembers(slug: String!, collection: String!): [CollectionMemberType!]!
+  wikiFavorites(slug: String!, limit: Int = null): [WikiFavoriteType!]!
+  tours: TourType!
+}
+
+type InstanceType {
+  instanceName: String!
+  currentVersion: String!
+  latestVersion: String!
+}
+
+type FeatureFlagType {
+  oidcSamlAuth: Boolean!
+  homeAdvanced: Boolean!
+  inboxStacking: Boolean!
+  workspaceActiveCycles: Boolean!
+  customers: Boolean!
+  initiatives: Boolean!
+  teamspaces: Boolean!
+  epics: Boolean!
+  projectTemplates: Boolean!
+  pageTemplates: Boolean!
+  projectTemplatesPublish: Boolean!
+  viewAccessPrivate: Boolean!
+  viewLock: Boolean!
+  viewPublish: Boolean!
+  projectOverview: Boolean!
+  projectGrouping: Boolean!
+  projectUpdates: Boolean!
+  bulkOpsOne: Boolean!
+  bulkOpsPro: Boolean!
+  cycleProgressCharts: Boolean!
+  issueTypes: Boolean!
+  issueWorklog: Boolean!
+  workitemTemplates: Boolean!
+  workItemConversion: Boolean!
+  copyWorkItem: Boolean!
+  estimateWithTime: Boolean!
+  timeEstimates: Boolean!
+  workflows: Boolean!
+  intakeSettings: Boolean!
+  intakeEmail: Boolean!
+  intakeForm: Boolean!
+  linkPages: Boolean!
+  collaborationCursor: Boolean!
+  editorAiOps: Boolean!
+  pageIssueEmbeds: Boolean!
+  pagePublish: Boolean!
+  movePages: Boolean!
+  nestedPages: Boolean!
+  workspacePages: Boolean!
+  sharedPages: Boolean!
+  editorAttachments: Boolean!
+  editorMathematics: Boolean!
+  editorExternalEmbeds: Boolean!
+  pageComments: Boolean!
+  editorAdvancedMentions: Boolean!
+  editorCopyBlockLink: Boolean!
+  editorVideoAttachments: Boolean!
+  silo: Boolean!
+  siloImporters: Boolean!
+  flatfileImporter: Boolean!
+  jiraImporter: Boolean!
+  jiraIssueTypesImporter: Boolean!
+  jiraServerImporter: Boolean!
+  jiraServerIssueTypesImporter: Boolean!
+  linearImporter: Boolean!
+  linearTeamsImporter: Boolean!
+  asanaImporter: Boolean!
+  asanaIssuePropertiesImporter: Boolean!
+  clickupImporter: Boolean!
+  clickupIssuePropertiesImporter: Boolean!
+  notionImporter: Boolean!
+  siloIntegrations: Boolean!
+  githubIntegration: Boolean!
+  gitlabIntegration: Boolean!
+  slackIntegration: Boolean!
+  fileSizeLimitPro: Boolean!
+  timelineDependency: Boolean!
+  piChat: Boolean!
+  piDedupe: Boolean!
+  piConverse: Boolean!
+  piFileUploads: Boolean!
+  aiChat: Boolean!
+  aiDedupe: Boolean!
+  aiConverse: Boolean!
+  aiFileUploads: Boolean!
+  aiPagesBlocks: Boolean!
+  aiPagesSummary: Boolean!
+  advancedSearch: Boolean!
+}
+
+type VersionCheckType {
+  version: String
+  minSupportedVersion: String
+  url: String
+  forceUpdate: Boolean!
+  minSupportedBackendVersion: String
+}
+
+type UnsplashImages {
+  total: Int
+  totalPages: Int
+  urls: [UnsplashImagesInfo!]!
+}
+
+type UnsplashImagesInfo {
+  raw: String!
+  full: String!
+  regular: String!
+  small: String!
+  thumb: String!
+  smallS3: String!
+}
+
+type ProjectCovers {
+  urls: [String!]!
+}
+
+type TimezoneListType {
+  value: String!
+  query: String!
+  label: String!
+}
+
+type UserType {
+  id: ID!
+  avatar: String
+  coverImage: String
+  dateJoined: DateTime!
+  displayName: String!
+  email: String!
+  firstName: String!
+  lastName: String!
+  isActive: Boolean!
+  isBot: Boolean!
+  isEmailVerified: Boolean!
+  userTimezone: String!
+  username: String!
+  isPasswordAutoset: Boolean!
+  lastLoginMedium: String!
+  avatarUrl: String
+  coverImageUrl: String
+}
+
+"""Date with time (isoformat)"""
+scalar DateTime
+
+type ProfileType {
+  id: ID!
+  user: ID!
+  theme: JSON!
+  isTourCompleted: Boolean!
+  onboardingStep: JSON!
+  useCase: String
+  role: String
+  isOnboarded: Boolean!
+  lastWorkspaceId: ID
+  billingAddressCountry: JSON!
+  billingAddress: String
+  hasBillingAddress: Boolean!
+  companyName: String!
+  mobileTimezoneAutoSet: Boolean!
+  isMobileOnboarded: Boolean!
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf).
+"""
+scalar JSON
+
+type WorkspaceYourWorkType {
+  projects: Int!
+  issues: Int!
+  pages: Int!
+}
+
+type UserFavoriteType {
+  id: ID!
+  entityType: String!
+  entityIdentifier: String
+  name: String
+  isFolder: Boolean!
+  sequence: Float!
+  parent: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  project: ID
+  workspace: Int!
+  projectDetails: ProjectLiteType!
+  entityData: UserFavoriteEntityData
+}
+
+type ProjectLiteType {
+  id: ID
+  name: String
+  identifier: String
+  isMember: Boolean
+  logoProps: JSON
+}
+
+type UserFavoriteEntityData {
+  id: ID
+  name: String
+  logoProps: JSON
+  isEpic: Boolean
+  workitemIdentifier: String
+}
+
+type UserRecentVisitType {
+  id: ID!
+  entityIdentifier: String!
+  entityName: String!
+  user: ID!
+  visitedAt: DateTime
+  workspace: ID
+  project: ID
+  projectDetails: ProjectLiteType
+  createdBy: ID
+  updatedBy: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  entityData: UserRecentVisitEntityData
+}
+
+type UserRecentVisitEntityData {
+  id: ID
+  name: String
+  logoProps: JSON
+  isEpic: Boolean
+  workitemIdentifier: String
+}
+
+type UserInformationType {
+  user: UserType!
+  profile: ProfileType!
+  workspace: WorkspaceType
+  deviceInfo: DeviceInformationType
+}
+
+type WorkspaceType {
+  id: UUID!
+  name: String!
+  slug: String!
+  logo: String
+  owner: ID!
+  organizationSize: String
+  logoUrl: String
+  deletedAt: DateTime
+  role: Int
+}
+
+scalar UUID
+
+type DeviceInformationType {
+  user: String!
+  deviceId: String!
+  deviceType: DeviceInformationEnumType!
+  pushToken: String!
+  isActive: Boolean!
+}
+
+enum DeviceInformationEnumType {
+  ANDROID
+  IOS
+}
+
+type UserDeleteType {
+  canDelete: Boolean!
+  workspaces: [WorkspaceType!]
+}
+
+type UserProjectRolesType {
+  projectId: String!
+  role: Int
+  projectRole: Int
+  teamspaceRole: Int
+}
+
+type NotificationTypePaginatorResponse {
+  prevCursor: String
+  cursor: String!
+  nextCursor: String
+  prevPageResults: Boolean!
+  nextPageResults: Boolean!
+  count: Int!
+  totalCount: Int!
+  results: [NotificationType!]!
+}
+
+type NotificationType {
+  id: ID!
+  title: String!
+  message: JSON
+  sender: String!
+  triggeredBy: UserType
+  receiver: ID!
+  readAt: DateTime
+  snoozedTill: DateTime
+  archivedAt: DateTime
+  entityName: String!
+  entityIdentifier: ID!
+  data: JSON!
+  workspace: ID!
+  project: ProjectLiteType
+  createdAt: DateTime
+  updatedAt: DateTime
+  isMentionedNotification: Boolean!
+  intakeId: String
+  isIntakeIssue: Boolean!
+  isEpic: Boolean!
+}
+
+type NotificationCountType {
+  unread: Int
+  mentioned: Int
+  workspaces: [NotificationCountWorkspaceType!]
+}
+
+type NotificationCountWorkspaceType {
+  unread: Int
+  mentioned: Int
+  id: String!
+  slug: String!
+  name: String!
+}
+
+type GlobalSearchType {
+  projects: [ProjectLiteType!]!
+  issues: [IssueLiteType!]!
+  modules: [ModuleLiteType!]!
+  cycles: [CycleLiteType!]!
+  pages: [PageLiteType!]!
+  epics: [IssueLiteType!]!
+}
+
+type IssueLiteType {
+  id: ID!
+  name: String!
+  sequenceId: Int!
+  workspace: ID!
+  project: ID!
+  projectIdentifier: String
+  isEpic: Boolean
+}
+
+type ModuleLiteType {
+  id: ID!
+  name: String!
+  project: ID!
+}
+
+type CycleLiteType {
+  id: ID!
+  name: String!
+  project: ID!
+}
+
+type PageLiteType {
+  id: ID!
+  name: String!
+  projects: [ProjectLiteType!]!
+}
+
+type WorkspaceLicenseType {
+  isCancelled: Boolean
+  purchasedSeats: Int
+  currentPeriodEndDate: String
+  interval: String
+  product: String
+  isOfflinePayment: Boolean
+  trialEndDate: String
+  hasActivatedFreeTrial: Boolean
+  hasAddedPaymentMethod: Boolean
+  subscription: String
+  isSelfManaged: Boolean
+  isOnTrial: Boolean
+  isTrialAllowed: Boolean
+  remainingTrialDays: Int
+  hasUpgraded: Boolean
+  showPaymentButton: Boolean
+  showTrialBanner: Boolean
+  freeSeats: Int
+  occupiedSeats: Int
+  showSeatsBanner: Boolean
+  currentPeriodStartDate: String
+  isTrialEnded: Boolean
+  billableMembers: Int
+  isFreeMemberCountExceeded: Boolean
+  canDeleteWorkspace: Boolean
+  showVerificationFailedBanner: Boolean
+}
+
+type WorkspaceMemberType {
+  id: ID!
+  member: UserType!
+  role: Int!
+  isActive: Boolean!
+}
+
+type WorkspaceInviteType {
+  id: String
+  email: String
+  accepted: Boolean
+  token: String
+  message: String
+  respondedAt: String
+  role: String
+  workspace: WorkspaceType
+}
+
+type WorkspaceFeatureType {
+  isProjectGroupingEnabled: Boolean!
+  isInitiativeEnabled: Boolean!
+  isTeamsEnabled: Boolean!
+  isCustomerEnabled: Boolean!
+}
+
+type FavoriteType {
+  id: ID!
+  entityType: String!
+  entityIdentifier: String
+  name: String
+  isFolder: Boolean!
+  sequence: Float!
+  parent: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  project: ID
+  workspace: Int!
+  projectDetails: ProjectLiteType!
+  entityData: ProjectFavoriteEntityData
+}
+
+type ProjectFavoriteEntityData {
+  id: ID
+  name: String
+  logoProps: JSON
+  isEpic: Boolean
+  workitemIdentifier: String
+}
+
+type ProjectType {
+  id: ID!
+  name: String!
+  description: String
+  network: Int!
+  workspace: String!
+  identifier: String!
+  defaultAssignee: ID
+  projectLead: ID
+  emoji: String
+  iconProp: JSON
+  moduleView: Boolean!
+  cycleView: Boolean!
+  issueViewsView: Boolean!
+  pageView: Boolean!
+  intakeView: Boolean!
+  coverImage: String
+  estimate: ID
+  archiveIn: Int!
+  closeIn: Int!
+  logoProps: JSON!
+  defaultState: ID
+  archivedAt: DateTime
+  isMember: Boolean!
+  isFavorite: Boolean!
+  totalMembers: Int!
+  totalIssues: Int!
+  totalActiveIssues: Int!
+  role: Int
+  coverImageUrl: String
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type ProjectTypePaginatorResponse {
+  prevCursor: String
+  cursor: String!
+  nextCursor: String
+  prevPageResults: Boolean!
+  nextPageResults: Boolean!
+  count: Int!
+  totalCount: Int!
+  results: [ProjectType!]!
+}
+
+type ProjectMemberType {
+  id: ID!
+  member: ID!
+  role: Int!
+  isActive: Boolean!
+  project: ID!
+  workspace: ID!
+}
+
+type ProjectFeatureType {
+  moduleView: Boolean!
+  cycleView: Boolean!
+  issueViewsView: Boolean!
+  pageView: Boolean!
+  intakeView: Boolean!
+  guestViewAllFeatures: Boolean!
+  isProjectUpdatesEnabled: Boolean!
+  isEpicEnabled: Boolean!
+  isWorkflowEnabled: Boolean!
+}
+
+type ProjectPublicLiteType {
+  id: ID
+  name: String
+  identifier: String
+  logoProps: JSON
+}
+
+type IssueShortenedMetaInfo {
+  project: ID!
+  workItem: ID!
+  isEpic: Boolean
+  isIntake: Boolean
+  intakeId: ID
+}
+
+type IssuesInformationType {
+  all: IssuesInformationObjectType
+  active: IssuesInformationObjectType
+  backlog: IssuesInformationObjectType
+}
+
+type IssuesInformationObjectType {
+  totalIssues: Int!
+  groupInfo: JSON
+}
+
+type IssuesTypePaginatorResponse {
+  prevCursor: String
+  cursor: String!
+  nextCursor: String
+  prevPageResults: Boolean!
+  nextPageResults: Boolean!
+  count: Int!
+  totalCount: Int!
+  results: [IssuesType!]!
+}
+
+type IssuesType {
+  id: ID!
+  workspace: ID!
+  project: ID!
+  parent: ID
+  state: ID!
+  point: Int
+  estimatePoint: ID
+  name: String!
+  descriptionJson: JSON
+  descriptionHtml: String
+  descriptionStripped: String
+  descriptionBinary: String
+  priority: String!
+  startDate: Date
+  targetDate: Date
+  sequenceId: Int!
+  sortOrder: Float!
+  completedAt: Date
+  archivedAt: Date
+  isDraft: Boolean!
+  externalSource: String
+  externalId: String
+  createdBy: ID
+  updatedBy: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+  cycle: ID
+  modules: [ID!]
+  type: ID
+  projectIdentifier: String
+  description: JSON
+  assignees: [ID!]
+  labels: [ID!]
+  isEpic: Boolean!
+  parentProjectId: String
+  parentProjectIdentifier: String
+  parentIsEpic: Boolean!
+  analytics: EpicAnalyticsType!
+}
+
+"""Date (isoformat)"""
+scalar Date
+
+type EpicAnalyticsType {
+  backlog: Int
+  unstarted: Int
+  started: Int
+  completed: Int
+  cancelled: Int
+}
+
+type IssueUserPropertyType {
+  displayFilters: JSON!
+  displayProperties: JSON!
+  filters: JSON!
+  id: ID!
+  project: ID!
+  user: ID!
+  workspace: ID!
+}
+
+type IssuePropertyActivityType {
+  id: ID!
+  issue: ID!
+  verb: String!
+  field: String
+  oldValue: String
+  newValue: String
+  comment: String!
+  attachments: [String!]!
+  issueComment: ID
+  actor: ID!
+  actorDetails: UserLiteType
+  oldIdentifier: ID
+  newIdentifier: ID
+  epoch: Float!
+  workspace: ID!
+  project: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type UserLiteType {
+  id: ID
+  firstName: String
+  lastName: String
+  avatar: String
+  avatarUrl: String
+  isBot: Boolean!
+  displayName: String
+}
+
+type IssueCommentActivityType {
+  id: ID!
+  commentStripped: String!
+  commentJson: JSON!
+  commentHtml: String!
+  attachments: [String!]!
+  issue: ID!
+  actor: ID!
+  actorDetails: UserLiteType
+  access: String!
+  externalSource: String
+  externalId: String
+  workspace: ID!
+  project: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  editedAt: DateTime
+  parent: String
+  deletedAt: DateTime
+  createdBy: ID
+  updatedBy: ID
+}
+
+type IssueLinkType {
+  id: ID!
+  title: String
+  url: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+  metadata: JSON
+  workspace: ID!
+  project: ID!
+  issue: ID!
+  createdBy: ID
+  updatedBy: ID
+}
+
+type FileAssetType {
+  id: ID!
+  attributes: JSON!
+  asset: String!
+  size: Float!
+  entityType: FileAssetEntityType!
+  entityIdentifier: ID
+  storageMetadata: JSON
+  user: ID!
+  workspace: ID!
+  draftIssue: ID
+  project: ID
+  issue: ID
+  comment: ID
+  page: ID
+  isUploaded: Boolean!
+  isArchived: Boolean!
+  isDeleted: Boolean!
+  deletedAt: String
+  externalId: ID
+  externalSource: String
+  createdBy: ID
+  updatedBy: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+  assetUrl: String
+}
+
+enum FileAssetEntityType {
+  USER_COVER
+  USER_AVATAR
+  WORKSPACE_LOGO
+  PROJECT_COVER
+  PROJECT_DESCRIPTION
+  PROJECT_ATTACHMENT
+  PAGE_DESCRIPTION
+  ISSUE_DESCRIPTION
+  DRAFT_ISSUE_DESCRIPTION
+  COMMENT_DESCRIPTION
+  ISSUE_ATTACHMENT
+  DRAFT_ISSUE_ATTACHMENT
+  INITIATIVE_DESCRIPTION
+  INITIATIVE_ATTACHMENT
+  INITIATIVE_COMMENT_DESCRIPTION
+  TEAM_SPACE_DESCRIPTION
+  TEAM_SPACE_COMMENT_DESCRIPTION
+}
+
+type IssueRelationType {
+  blocking: [WorkItemRelationWorkItemType!]!
+  blockedBy: [WorkItemRelationWorkItemType!]!
+  duplicate: [WorkItemRelationWorkItemType!]!
+  relatesTo: [WorkItemRelationWorkItemType!]!
+  startAfter: [WorkItemRelationWorkItemType!]!
+  startBefore: [WorkItemRelationWorkItemType!]!
+  finishAfter: [WorkItemRelationWorkItemType!]!
+  finishBefore: [WorkItemRelationWorkItemType!]!
+  implements: [WorkItemRelationWorkItemType!]
+  implementedBy: [WorkItemRelationWorkItemType!]
+}
+
+type WorkItemRelationWorkItemType {
+  id: ID!
+  name: String!
+  priority: String!
+  sequenceId: Int!
+  project: ID!
+  projectIdentifier: String!
+  state: ID!
+  assignees: [ID!]
+  isEpic: Boolean!
+  analytics: EpicAnalyticsType!
+}
+
+type IssueLiteTypePaginatorResponse {
+  prevCursor: String
+  cursor: String!
+  nextCursor: String
+  prevPageResults: Boolean!
+  nextPageResults: Boolean!
+  count: Int!
+  totalCount: Int!
+  results: [IssueLiteType!]!
+}
+
+enum WorkItemRelationTypes {
+  BLOCKING
+  BLOCKED_BY
+  START_AFTER
+  START_BEFORE
+  FINISH_AFTER
+  FINISH_BEFORE
+  DUPLICATE
+  RELATES_TO
+  IMPLEMENTS
+  IMPLEMENTED_BY
+}
+
+type CommentReactionType {
+  reaction: String!
+  userIds: [ID!]!
+}
+
+type IssueStatsType {
+  attachments: Int!
+  relations: Int!
+  subWorkItems: Int!
+  links: Int!
+  pages: Int
+}
+
+type WorkItemMentionType {
+  id: String!
+  name: String!
+  sequenceId: Int!
+  projectId: String!
+  typeId: String
+  projectIdentifier: String!
+  stateGroup: String!
+  stateName: String!
+  archivedAt: DateTime
+  isEpic: Boolean
+}
+
+type WorkItemPageType {
+  id: String!
+  name: String!
+  logoProps: JSON!
+  isGlobal: Boolean!
+  access: Int!
+}
+
+type IssueTypesType {
+  id: ID!
+  workspace: ID!
+  name: String!
+  description: String!
+  logoProps: JSON!
+  isDefault: Boolean!
+  level: Int!
+  isActive: Boolean!
+}
+
+type LabelType {
+  id: ID!
+  parent: ID
+  name: String!
+  description: String!
+  color: String!
+  sortOrder: Float!
+  workspace: ID!
+  project: ID!
+}
+
+type StateType {
+  id: ID!
+  name: String!
+  description: String!
+  color: String!
+  slug: String!
+  sequence: Float!
+  group: String!
+  isTriage: Boolean!
+  default: Boolean!
+  workspace: ID!
+  project: ID!
+  order: Float
+}
+
+type EstimatePointType {
+  id: ID!
+  estimate: ID!
+  key: Int!
+  description: String!
+  value: String!
+  workspace: ID!
+  project: ID!
+}
+
+type CycleType {
+  id: ID!
+  name: String!
+  description: String
+  startDate: Date
+  endDate: Date
+  viewProps: JSON
+  sortOrder: Float
+  externalSource: String
+  externalId: ID
+  progressSnapshot: JSON
+  archivedAt: DateTime
+  logoProps: JSON
+  project: ID!
+  workspace: ID!
+  createdBy: ID
+  updatedBy: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+  totalIssues: Int!
+  completedIssues: Int!
+  isFavorite: Boolean!
+  favoriteId: ID
+  ownedBy: UserType
+  status: String!
+  startedIssues: Int!
+  unstartedIssues: Int!
+  assigneesCount: Int!
+}
+
+type CycleUserPropertyType {
+  displayFilters: JSON!
+  displayProperties: JSON!
+  filters: JSON!
+  id: ID!
+  user: ID!
+  workspace: ID!
+  project: ID!
+  cycle: ID!
+}
+
+type ModuleTypePaginatorResponse {
+  prevCursor: String
+  cursor: String!
+  nextCursor: String
+  prevPageResults: Boolean!
+  nextPageResults: Boolean!
+  count: Int!
+  totalCount: Int!
+  results: [ModuleType!]!
+}
+
+type ModuleType {
+  name: String!
+  status: String!
+  id: ID!
+  project: ID!
+  workspace: ID!
+  createdBy: ID
+  updatedBy: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+  description: String
+  descriptionText: String
+  descriptionHtml: String
+  startDate: Date
+  targetDate: Date
+  members: [ID!]
+  viewProps: JSON
+  sortOrder: Float!
+  externalSource: String
+  externalId: ID
+  archivedAt: DateTime
+  logoProps: JSON
+  totalIssues: Int!
+  completedIssues: Int!
+  isFavorite: Boolean!
+  favoriteId: ID
+  lead: UserType
+  assigneesCount: Int!
+}
+
+type ModuleUserPropertyType {
+  displayFilters: JSON!
+  displayProperties: JSON!
+  filters: JSON!
+  id: ID!
+  user: ID!
+  workspace: ID!
+  project: ID!
+  module: ID!
+}
+
+type PageTypePaginatorResponse {
+  prevCursor: String
+  cursor: String!
+  nextCursor: String
+  prevPageResults: Boolean!
+  nextPageResults: Boolean!
+  count: Int!
+  totalCount: Int!
+  results: [PageType!]!
+}
+
+type PageType {
+  id: ID!
+  parent: ID
+  name: String!
+  descriptionJson: JSON
+  descriptionHtml: String
+  descriptionStripped: String
+  descriptionBinary: String
+  workspace: ID!
+  project: ID
+  ownedBy: ID!
+  access: Int!
+  color: String
+  archivedAt: Date
+  isLocked: Boolean!
+  viewProps: JSON!
+  logoProps: JSON!
+  isGlobal: Boolean!
+  isFavorite: Boolean!
+  inCollection: Boolean!
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  projects: [ID!]!
+  isDescriptionEmpty: Boolean!
+  isShared: Boolean!
+  isSharedAccess: Int!
+  sortOrder: Float!
+  movedToPage: String
+  movedToProject: String
+  externalId: String
+  externalSource: String
+  description: JSON
+}
+
+type NestedParentPageLiteType {
+  id: ID!
+  name: String!
+  access: Int!
+  logoProps: JSON!
+  isLocked: Boolean!
+  archivedAt: Date
+  parent: ID
+  workspace: ID!
+  ownedBy: ID!
+  deletedAt: DateTime
+  isDescriptionEmpty: Boolean!
+  projects: [ID!]!
+}
+
+type PageCommentListTypePaginatorResponse {
+  prevCursor: String
+  cursor: String!
+  nextCursor: String
+  prevPageResults: Boolean!
+  nextPageResults: Boolean!
+  count: Int!
+  totalCount: Int!
+  results: [PageCommentListType!]!
+}
+
+type PageCommentListType {
+  id: String!
+  isResolved: Boolean!
+  referenceStripped: String
+  workspace: String!
+  project: String
+  page: String!
+  parent: String
+  description: PageCommentDescriptionType!
+  editedAt: DateTime
+  createdBy: String
+  updatedBy: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  reactionsCount: [PageCommentReactionCountType!]!
+  totalReplies: Int!
+  latestReply: PageCommentWithReactionsListType
+}
+
+type PageCommentDescriptionType {
+  id: String!
+  descriptionHtml: String
+  descriptionJson: JSON
+  descriptionBinary: String
+  descriptionStripped: String
+  workspace: String!
+  project: String
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type PageCommentReactionCountType {
+  reaction: String!
+  userIds: [String!]!
+}
+
+type PageCommentWithReactionsListType {
+  id: String!
+  isResolved: Boolean!
+  referenceStripped: String
+  workspace: String!
+  project: String
+  page: String!
+  parent: String
+  description: PageCommentDescriptionType!
+  editedAt: DateTime
+  createdBy: String
+  updatedBy: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  reactionsCount: [PageCommentReactionCountType!]!
+}
+
+type PageCommentWithReactionsListTypePaginatorResponse {
+  prevCursor: String
+  cursor: String!
+  nextCursor: String
+  prevPageResults: Boolean!
+  nextPageResults: Boolean!
+  count: Int!
+  totalCount: Int!
+  results: [PageCommentWithReactionsListType!]!
+}
+
+type PageCommentType {
+  id: String!
+  isResolved: Boolean!
+  referenceStripped: String
+  workspace: String!
+  project: String
+  page: String!
+  parent: String
+  description: PageCommentDescriptionType!
+  editedAt: DateTime
+  createdBy: String
+  updatedBy: String
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type PageMentionType {
+  id: String!
+  workspace: String!
+  page: String!
+  transaction: String!
+  entityIdentifier: String
+  entityName: PageMentionEntityNameEnum!
+  entityType: PageMentionEntityTypeEnum!
+  createdAt: DateTime
+  updatedAt: DateTime
+  workitem: WorkItemMentionType
+  user: PageMentionUserType
+}
+
+enum PageMentionEntityNameEnum {
+  USER_MENTION
+  ISSUE_MENTION
+}
+
+enum PageMentionEntityTypeEnum {
+  MENTION
+}
+
+type PageMentionUserType {
+  id: String!
+  displayName: String
+  firstName: String
+  lastName: String
+  avatarUrl: String
+}
+
+type EpicUserPropertyType {
+  id: ID!
+  filters: JSON
+  displayFilters: JSON
+  displayProperties: JSON
+  workspace: ID
+  project: ID
+  user: ID
+  createdBy: ID
+  updatedBy: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type EpicCountType {
+  totalEpics: Int
+}
+
+type EpicTypePaginatorResponse {
+  prevCursor: String
+  cursor: String!
+  nextCursor: String
+  prevPageResults: Boolean!
+  nextPageResults: Boolean!
+  count: Int!
+  totalCount: Int!
+  results: [EpicType!]!
+}
+
+type EpicType {
+  id: ID!
+  name: String!
+  descriptionJson: JSON
+  descriptionHtml: String
+  descriptionStripped: String
+  descriptionBinary: String
+  sequenceId: Int!
+  sortOrder: Float!
+  priority: String!
+  startDate: Date
+  targetDate: Date
+  description: JSON
+  state: ID
+  workspace: ID
+  project: ID
+  projectIdentifier: String
+  labels: [ID!]
+  assignees: [ID!]
+  createdBy: ID
+  updatedBy: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+  archivedAt: DateTime
+  analytics: EpicAnalyticsType!
+}
+
+type EpicLinkType {
+  id: ID!
+  title: String
+  url: String!
+  metadata: JSON
+  workspace: ID!
+  project: ID!
+  epic: ID!
+  createdBy: ID
+  updatedBy: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type EpicRelationType {
+  blocking: [WorkItemRelationWorkItemType!]!
+  blockedBy: [WorkItemRelationWorkItemType!]!
+  duplicate: [WorkItemRelationWorkItemType!]!
+  relatesTo: [WorkItemRelationWorkItemType!]!
+  startAfter: [WorkItemRelationWorkItemType!]!
+  startBefore: [WorkItemRelationWorkItemType!]!
+  finishAfter: [WorkItemRelationWorkItemType!]!
+  finishBefore: [WorkItemRelationWorkItemType!]!
+  implements: [WorkItemRelationWorkItemType!]
+  implementedBy: [WorkItemRelationWorkItemType!]
+}
+
+type EpicPropertyActivityType {
+  id: ID!
+  issue: ID!
+  verb: String!
+  field: String
+  oldValue: String
+  newValue: String
+  comment: String!
+  attachments: [String!]!
+  issueComment: ID
+  actor: ID!
+  actorDetails: UserLiteType
+  oldIdentifier: ID
+  newIdentifier: ID
+  epoch: Float!
+  workspace: ID!
+  project: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type EpicCommentActivityType {
+  id: ID!
+  commentStripped: String!
+  commentJson: JSON!
+  commentHtml: String!
+  attachments: [String!]!
+  issue: ID!
+  actor: ID!
+  actorDetails: UserLiteType
+  access: String!
+  externalSource: String
+  externalId: String
+  workspace: ID!
+  project: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  editedAt: DateTime
+  parent: String
+  deletedAt: DateTime
+  createdBy: ID
+  updatedBy: ID
+}
+
+type EpicStatsType {
+  attachments: Int!
+  relations: Int!
+  subWorkItems: Int!
+  links: Int!
+  pages: Int
+}
+
+type EpicPageType {
+  id: String!
+  name: String!
+  logoProps: JSON!
+  isGlobal: Boolean!
+  access: Int!
+}
+
+type StickiesTypePaginatorResponse {
+  prevCursor: String
+  cursor: String!
+  nextCursor: String
+  prevPageResults: Boolean!
+  nextPageResults: Boolean!
+  count: Int!
+  totalCount: Int!
+  results: [StickiesType!]!
+}
+
+type StickiesType {
+  id: ID!
+  name: String
+  description: JSON
+  descriptionHtml: String
+  descriptionStripped: String
+  descriptionBinary: String
+  logoProps: JSON!
+  color: String
+  backgroundColor: String
+  sortOrder: Float!
+  workspace: ID!
+  owner: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  createdBy: ID
+  updatedBy: ID
+}
+
+type TeamspaceMemberType {
+  id: ID!
+  member: String
+  workspace: String
+  teamSpace: String
+  sortOrder: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type IntakeCountType {
+  totalIntakeWorkItems: Int
+}
+
+type IntakeWorkItemTypePaginatorResponse {
+  prevCursor: String
+  cursor: String!
+  nextCursor: String
+  prevPageResults: Boolean!
+  nextPageResults: Boolean!
+  count: Int!
+  totalCount: Int!
+  results: [IntakeWorkItemType!]!
+}
+
+type IntakeWorkItemType {
+  id: ID!
+  intake: ID!
+  issue: IssuesType!
+  status: ID
+  snoozedTill: DateTime
+  duplicateTo: ID
+  source: String
+  sourceEmail: String
+  externalSource: String
+  externalId: String
+  extra: JSON
+  intakeId: ID
+  workspace: ID
+  project: ID
+  projectIdentifier: String
+  createdBy: ID
+  updatedBy: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+  archivedAt: DateTime
+}
+
+type IntakeWorkItemPropertyActivityType {
+  id: ID!
+  issue: ID!
+  verb: String!
+  field: String
+  oldValue: String
+  newValue: String
+  comment: String!
+  attachments: [String!]!
+  issueComment: ID
+  actor: ID
+  actorDetails: UserLiteType
+  oldIdentifier: ID
+  newIdentifier: ID
+  epoch: Float!
+  workspace: ID!
+  project: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  source: String
+  sourceEmail: String
+}
+
+type IntakeWorkItemCommentActivityType {
+  id: ID!
+  commentStripped: String!
+  commentJson: JSON!
+  commentHtml: String!
+  attachments: [String!]!
+  issue: ID!
+  actor: ID!
+  actorDetails: UserLiteType
+  access: String!
+  externalSource: String
+  externalId: String
+  workspace: ID!
+  project: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  editedAt: DateTime
+  parent: String
+  deletedAt: DateTime
+  createdBy: ID
+  updatedBy: ID
+}
+
+type IntakeStatsType {
+  attachments: Int!
+  relations: Int!
+  subWorkItems: Int!
+  links: Int!
+}
+
+type CatchUpType {
+  id: String
+  projectId: String
+  type: CatchUpTypeEnum!
+  count: Int
+  workItem: CatchUpWorkItemType
+  firstUnread: CatchUpActivityType
+  lastUnread: CatchUpActivityType
+}
+
+enum CatchUpTypeEnum {
+  WORK_ITEM
+  INTAKE
+  EPIC
+}
+
+type CatchUpWorkItemType {
+  id: String
+  name: String
+  projectIdentifier: String
+  sequenceId: String
+  intakeId: String
+}
+
+type CatchUpActivityType {
+  id: String
+  type: CatchUpActivityTypeEnum
+  createdAt: String
+}
+
+enum CatchUpActivityTypeEnum {
+  COMMENT
+  ACTIVITY
+}
+
+type InitiativeLabelType {
+  id: ID!
+  name: String!
+  description: String
+  color: String!
+  sortOrder: Float!
+  workspace: ID!
+  createdBy: ID
+  updatedBy: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type InitiativeCountType {
+  totalCount: Int
+  totalCountByLead: Int
+}
+
+type InitiativeInformationType {
+  createdBy: [String!]
+  lead: [String!]
+}
+
+type InitiativeTypePaginatorResponse {
+  prevCursor: String
+  cursor: String!
+  nextCursor: String
+  prevPageResults: Boolean!
+  nextPageResults: Boolean!
+  count: Int!
+  totalCount: Int!
+  results: [InitiativeType!]!
+}
+
+type InitiativeType {
+  id: ID!
+  name: String!
+  description: String
+  descriptionHtml: String
+  descriptionStripped: String
+  descriptionBinary: String
+  startDate: String
+  endDate: String
+  logoProps: JSON
+  state: InitiativeState!
+  workspace: ID!
+  lead: ID
+  labels: [ID!]
+  createdBy: ID
+  updatedBy: ID
+  archivedAt: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  projects: [ID!]
+  epics: [ID!]
+  entityUpdates: InitiativeEpicEntityUpdateType!
+  progress: InitiativeProgressType!
+}
+
+enum InitiativeState {
+  DRAFT
+  PLANNED
+  ACTIVE
+  COMPLETED
+  CLOSED
+}
+
+type InitiativeEpicEntityUpdateType {
+  offTrack: Int!
+  atRisk: Int!
+  onTrack: Int!
+}
+
+type InitiativeProgressType {
+  analytics: InitiativeProgressAnalyticsType!
+  projects: [InitiativeProgressItemType!]!
+  epics: [InitiativeProgressItemType!]!
+}
+
+type InitiativeProgressAnalyticsType {
+  backlog: Int
+  unstarted: Int
+  started: Int
+  completed: Int
+  cancelled: Int
+}
+
+type InitiativeProgressItemType {
+  id: ID!
+  analytics: InitiativeProgressAnalyticsType!
+}
+
+input InitiativesFiltersInput {
+  state: [InitiativeState!]
+  label: [String!]
+  lead: [String!]
+  createdBy: [String!]
+}
+
+type InitiativeActivityType {
+  id: ID!
+  verb: String!
+  field: String
+  oldValue: String
+  newValue: String
+  comment: String!
+  initiativeComment: ID
+  oldIdentifier: ID
+  newIdentifier: ID
+  epoch: Float!
+  actor: ID
+  actorDetails: UserLiteType
+  workspace: ID!
+  initiative: ID!
+  createdBy: ID
+  updatedBy: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type InitiativeReactionType {
+  reaction: String!
+  userIds: [ID!]
+}
+
+type InitiativeCommentType {
+  id: ID!
+  commentStripped: String!
+  commentJson: JSON!
+  commentHtml: String!
+  access: String!
+  externalSource: String
+  externalId: String
+  editedAt: DateTime
+  actor: ID
+  actorDetails: UserLiteType
+  workspace: ID!
+  initiative: ID!
+  createdBy: ID
+  updatedBy: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type InitiativeCommentReactionType {
+  reaction: String!
+  userIds: [ID!]
+}
+
+type InitiativeUserPropertyType {
+  id: ID!
+  filters: JSON
+  displayFilters: JSON
+  displayProperties: JSON
+  workspace: ID!
+  user: ID!
+  createdBy: ID
+  updatedBy: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type InitiativeLinkType {
+  id: ID!
+  url: String!
+  title: String
+  metadata: JSON
+  workspace: ID!
+  initiative: ID!
+  createdBy: ID
+  updatedBy: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type InitiativeProjectSearchType {
+  id: ID!
+  identifier: String
+  name: String
+  logoProps: JSON
+  network: Int
+}
+
+input InitiativeProjectSearchInput {
+  search: String
+}
+
+type InitiativeProjectType {
+  id: ID!
+  identifier: String
+  name: String
+  logoProps: JSON
+  network: Int
+  workspace: ID!
+  projectLead: ID
+  createdBy: ID
+  updatedBy: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+  totalActiveIssues: Int!
+}
+
+type InitiativeEpicSearchType {
+  id: ID!
+  sequenceId: Int!
+  name: String
+  workspace: ID!
+  project: ID!
+  projectIdentifier: String
+}
+
+input InitiativeEpicSearchInput {
+  search: String
+}
+
+type InitiativeEpicType {
+  id: ID!
+  sequenceId: Int!
+  name: String
+  priority: String!
+  sortOrder: Float!
+  startDate: Date
+  targetDate: Date
+  workspace: ID!
+  project: ID!
+  projectIdentifier: String
+  state: ID!
+  stateGroup: String
+  stateDetails: StateType
+  epic: ID!
+  assignees: [ID!]
+  analytics: EpicAnalyticsType!
+  createdBy: ID
+  updatedBy: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type InitiativeAttachmentType {
+  id: ID!
+  attributes: JSON!
+  asset: String!
+  size: Float!
+  entityType: FileAssetEntityType!
+  entityIdentifier: ID
+  storageMetadata: JSON
+  isUploaded: Boolean!
+  isArchived: Boolean!
+  isDeleted: Boolean!
+  externalId: ID
+  externalSource: String
+  deletedAt: String
+  user: ID
+  workspace: ID
+  project: ID
+  draftIssue: ID
+  issue: ID
+  comment: ID
+  page: ID
+  assetUrl: String
+  createdBy: ID
+  updatedBy: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input ArchivedInitiativesFiltersInput {
+  state: [InitiativeState!]
+  label: [String!]
+  lead: [String!]
+}
+
+type CollectionTypePaginatorResponse {
+  prevCursor: String
+  cursor: String!
+  nextCursor: String
+  prevPageResults: Boolean!
+  nextPageResults: Boolean!
+  count: Int!
+  totalCount: Int!
+  results: [CollectionType!]!
+}
+
+type CollectionType {
+  id: ID!
+  name: String!
+  access: CollectionAccess!
+  isDefault: Boolean!
+  logoProps: JSON
+  sortOrder: Float!
+  ownedBy: ID!
+  pageCount: Int!
+  workspace: ID!
+  createdBy: ID
+  updatedBy: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+  isOwner: Boolean!
+  currentUserAccess: Int
+}
+
+enum CollectionAccess {
+  PUBLIC
+  PRIVATE
+}
+
+type CollectionPageTypePaginatorResponse {
+  prevCursor: String
+  cursor: String!
+  nextCursor: String
+  prevPageResults: Boolean!
+  nextPageResults: Boolean!
+  count: Int!
+  totalCount: Int!
+  results: [CollectionPageType!]!
+}
+
+type CollectionPageType {
+  id: ID!
+  name: String!
+  descriptionJson: JSON
+  descriptionHtml: String
+  descriptionStripped: String
+  descriptionBinary: String
+  access: Int!
+  color: String
+  archivedAt: Date
+  isLocked: Boolean!
+  viewProps: JSON!
+  logoProps: JSON!
+  isGlobal: Boolean!
+  isFavorite: Boolean!
+  deletedAt: DateTime
+  isDescriptionEmpty: Boolean!
+  sortOrder: Float!
+  externalId: String
+  externalSource: String
+  description: JSON
+  ownedBy: ID
+  parent: ID
+  movedToPage: String
+  movedToProject: String
+  projects: [ID!]!
+  isShared: Boolean!
+  isSharedAccess: Int!
+  workspace: ID!
+  collection: ID!
+  createdBy: ID
+  updatedBy: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type CollectionMemberType {
+  id: ID!
+  access: CollectionMemberAccessEnum!
+  createdAt: DateTime
+  updatedAt: DateTime
+  collection: ID!
+  member: ID!
+  workspace: ID!
+}
+
+enum CollectionMemberAccessEnum {
+  VIEW
+  COMMENT
+  EDIT
+}
+
+type WikiFavoriteType {
+  id: ID!
+  entityType: String!
+  entityIdentifier: String
+  name: String
+  isFolder: Boolean!
+  sequence: Float!
+  parent: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  project: ID
+  workspace: Int!
+  entityData: WikiFavoriteEntityData
+}
+
+type WikiFavoriteEntityData {
+  id: ID
+  name: String
+  logoProps: JSON
+  isEpic: Boolean
+  workitemIdentifier: String
+}
+
+type TourType {
+  homeTour: Boolean!
+}
+
+type Mutation {
+  deviceInformation(deviceId: String!, deviceType: DeviceInformationEnumType!, pushToken: String!, isActive: Boolean = true): DeviceInformationType!
+  createWorkspaceAsset(slug: String!, name: String!, type: String!, size: Int!, entityType: WorkspaceAssetEnumType!, entityIdentifier: String = null): AssetPresignedUrlResponseType!
+  updateWorkspaceAsset(slug: String!, assetId: ID!, attributes: JSON = null): Boolean!
+  deleteWorkspaceAsset(slug: String!, assetId: ID!): Boolean!
+  updateWorkspaceAssetEntity(slug: String!, entityId: ID!, assetIds: [ID!]!): Boolean!
+  createProjectAsset(slug: String!, project: ID!, name: String!, type: String!, size: Int!, entityType: ProjectAssetEnumType!, entityIdentifier: String = null): AssetPresignedUrlResponseType!
+  updateProjectAsset(slug: String!, project: ID!, assetId: ID!, attributes: JSON = null): Boolean!
+  deleteProjectAsset(slug: String!, project: ID!, assetId: ID!): Boolean!
+  updateProjectAssetEntity(slug: String!, project: ID!, entityId: ID!, assetIds: [ID!]!): Boolean!
+  updateUser(firstName: String = null, lastName: String = null, displayName: String = null, userTimezone: String = null, coverImage: String = null): UserType!
+  updateLastWorkspace(workspace: ID!): Boolean!
+  updateProfile(mobileTimezoneAutoSet: Boolean = false): ProfileType!
+  updateProfileV2(profileInput: ProfileUpdateInputType!): ProfileType!
+  createUserFavorite(slug: String!, entityIdentifier: ID!, entityType: String!, project: ID = null): Boolean!
+  deleteUserFavorite(slug: String!, favorite: ID!): Boolean!
+  userDelete(deleteInput: UserDeleteInputType!): Boolean!
+  createUserAsset(name: String!, type: String!, size: Int!, entityType: UserAssetEnumType!): AssetPresignedUrlResponseType!
+  updateUserAsset(assetId: ID!, attributes: JSON = null): Boolean!
+  deleteUserAsset(assetId: ID!): Boolean!
+  setPassword(passwordInput: PasswordInputType!): Boolean!
+  readNotification(slug: String!, notification: ID!): Boolean!
+  markAllReadNotification(slug: String!): Boolean!
+  workspaceSlugCheck(workspaceSlugInput: WorkspaceSlugVerificationInputType!): Boolean!
+  createWorkspace(workspaceInput: WorkspaceCreateInputType!): WorkspaceType!
+  updateWorkspace(slug: String!, workspaceInput: WorkspaceUpdateInputType!): WorkspaceType!
+  joinUserWorkspaceInvites(invitationIds: [String!]!): Boolean!
+  acceptPublicWorkspaceInvite(invitationId: String!, email: String!): Boolean!
+  acceptPublicWorkspaceInviteV2(invitationId: String!, slug: String!, token: String = null): Boolean!
+  createProject(slug: String!, name: String!, identifier: String!, description: String = "", network: Int! = 2, coverImage: String = null, projectLead: ID = null, logoProps: JSON, pageView: Boolean = true, moduleView: Boolean = true, cycleView: Boolean = true, issueViewsView: Boolean = true): ProjectType!
+  updateProject(id: ID!, slug: String!, name: String = null, identifier: String = null, description: String = null, network: Int = null, logoProps: JSON = null, pageView: Boolean = null, moduleView: Boolean = null, cycleView: Boolean = null, issueViewsView: Boolean = null, coverImage: String = null): ProjectType!
+  deleteProject(id: ID!): Boolean!
+  inviteProjectMembers(slug: String!, project: ID!, emails: JSON!): Boolean!
+  joinProject(slug: String!, project: ID!): Boolean!
+  favoriteProject(slug: String!, project: ID!): Boolean!
+  unFavoriteProject(slug: String!, project: ID!): Boolean!
+  updateUserProperties(slug: String!, project: ID!, filters: JSON!, displayFilters: JSON!, displayProperties: JSON!): IssueUserPropertyType!
+  createIssueV2(slug: String!, project: String!, issueInput: IssueCreateInputType!): IssuesType!
+  updateIssueV2(slug: String!, project: String!, id: String!, issueInput: IssueUpdateInputType = null): IssuesType!
+  createIssueLink(slug: String!, project: ID!, issue: ID!, url: String!, title: String = ""): IssueLinkType!
+  updateIssueLink(slug: String!, project: ID!, issue: ID!, link: ID!, title: String = null, url: String = null): IssueLinkType!
+  removeIssueLink(slug: String!, project: ID!, issue: ID!, link: ID!): Boolean!
+  createIssueAttachment(slug: String!, project: ID!, issue: ID!, name: String!, type: String!, size: Int!): IssueAttachmentPresignedUrlResponseType!
+  updateIssueAttachment(slug: String!, project: ID!, issue: ID!, attachment: ID!, attributes: JSON = null): FileAssetType!
+  deleteIssueAttachment(slug: String!, project: ID!, issue: ID!, attachment: ID!): Boolean!
+  subscribeIssue(slug: String!, project: ID!, issue: ID!): Boolean!
+  unSubscribeIssue(slug: String!, project: ID!, issue: ID!): Boolean!
+  addIssueRelation(slug: String!, project: ID!, issue: ID!, relationType: String!, relatedIssueIds: [ID!]!): Boolean!
+  addIssueComment(slug: String!, project: ID!, issue: ID!, commentHtml: String!): Boolean!
+  addIssueCommentV2(slug: String!, project: ID!, issue: ID!, commentHtml: String!): IssueCommentActivityType!
+  deleteWorkItemComment(slug: String!, project: String!, workItem: String!, comment: String!): Boolean!
+  addWorkItemCommentReply(slug: String!, project: String!, workItem: String!, comment: String!, commentHtml: String!): IssueCommentActivityType!
+  deleteWorkItemCommentReply(slug: String!, project: String!, workItem: String!, comment: String!, reply: String!): Boolean!
+  createSubIssue(slug: String!, project: ID!, parentIssueId: ID!, subIssueIds: [ID!]!): Boolean!
+  removeSubIssue(slug: String!, project: ID!, parentIssueId: ID!, subIssueId: ID!): Boolean!
+  addWorkItemCommentReaction(slug: String!, project: String!, workItem: String!, comment: String!, reactionInput: CommentReactionInput!): CommentReactionType!
+  removeWorkItemCommentReaction(slug: String!, project: String!, workItem: String!, comment: String!, reactionInput: CommentReactionInput!): CommentReactionType!
+  addWorkItemPage(slug: String!, project: String!, workItem: String!, pageIds: [String!]!): [WorkItemPageType!]!
+  deleteWorkItemPage(slug: String!, project: String!, workItem: String!, pageIds: [String!]!): Boolean!
+  deleteWorkItem(slug: String!, project: String!, workItem: String!): Boolean!
+  archiveWorkItem(slug: String!, project: String!, workItem: String!): Boolean!
+  unarchiveWorkItem(slug: String!, project: String!, workItem: String!): Boolean!
+  updateCycleUserProperties(slug: String!, project: ID!, cycle: ID!, filters: JSON!, displayFilters: JSON!, displayProperties: JSON!): CycleUserPropertyType!
+  createCycleIssue(slug: String!, project: ID!, cycle: ID!, issues: JSON!): Boolean!
+  deleteCycleIssue(slug: String!, project: ID!, cycle: ID!, issue: ID!): Boolean!
+  issueCycle(slug: String!, project: ID!, issue: ID!, cycle: ID = null): Boolean!
+  favoriteCycle(slug: String!, project: ID!, cycle: ID!): Boolean!
+  unFavoriteCycle(slug: String!, project: ID!, cycle: ID!): Boolean!
+  updateModuleUserProperties(slug: String!, project: ID!, module: ID!, filters: JSON!, displayFilters: JSON!, displayProperties: JSON!): ModuleUserPropertyType!
+  createModuleIssues(slug: String!, project: ID!, module: ID!, issues: [ID!]!): Boolean!
+  deleteModuleIssue(slug: String!, project: ID!, module: ID!, issue: ID!): Boolean!
+  issueModules(slug: String!, project: ID!, issue: ID!, modules: [ID!]!): Boolean!
+  favoriteModule(slug: String!, project: ID!, module: ID!): Boolean!
+  unFavoriteModule(slug: String!, project: ID!, module: ID!): Boolean!
+  createWorkspacePage(slug: String!, name: String = "", descriptionHtml: String = "", logoProps: JSON, access: Int! = 0, descriptionBinary: String = null): PageType!
+  updateWorkspacePage(slug: String!, id: ID!, name: String = null, descriptionHtml: String = null, logoProps: JSON = null, access: Int = null): PageType!
+  lockWorkspacePage(slug: String!, pageId: ID!, cascade: Boolean! = false): PageType!
+  unlockWorkspacePage(slug: String!, pageId: ID!, cascade: Boolean! = false): PageType!
+  archiveWorkspacePage(slug: String!, pageId: ID!): PageType!
+  unarchiveWorkspacePage(slug: String!, pageId: ID!): PageType!
+  createPage(slug: String!, project: ID!, name: String!, descriptionHtml: String = "", logoProps: JSON, access: Int! = 2, descriptionBinary: String = null): PageType!
+  batchCreatePages(slug: String!, project: ID!, pages: [PageInput!]!): Void
+  updatePage(slug: String!, project: ID!, id: ID!, name: String = null, descriptionHtml: String = null, logoProps: JSON = null, access: Int = null): PageType!
+  favoritePage(slug: String!, project: ID!, page: ID!): Boolean!
+  unFavoritePage(slug: String!, project: ID!, page: ID!): Boolean!
+  workspaceNestedChildArchivePages(slug: String!, page: ID!): [NestedParentPageLiteType!]!
+  workspaceNestedChildRestorePages(slug: String!, page: ID!): [NestedParentPageLiteType!]!
+  nestedChildArchivePages(slug: String!, project: ID!, page: ID!): [NestedParentPageLiteType!]!
+  nestedChildRestorePages(slug: String!, project: ID!, page: ID!): [NestedParentPageLiteType!]!
+  workspaceNestedChildDeletePages(slug: String!, pages: [ID!]!): Boolean!
+  nestedChildDeletePages(slug: String!, project: ID!, pages: [ID!]!): Boolean!
+  addPageComment(slug: String!, project: String!, page: String!, input: PageCommentInput!): PageCommentListType!
+  addPageCommentReply(slug: String!, project: String!, page: String!, comment: String!, input: PageCommentInput!): PageCommentWithReactionsListType!
+  updatePageComment(slug: String!, project: String!, page: String!, comment: String!, input: PageCommentInput!): PageCommentType!
+  resolvePageComment(slug: String!, project: String!, page: String!, comment: String!): PageCommentType!
+  unResolvePageComment(slug: String!, project: String!, page: String!, comment: String!): PageCommentType!
+  deletePageComment(slug: String!, project: String!, page: String!, comment: String!): Boolean!
+  restorePageComment(slug: String!, project: String!, page: String!, comment: String!): PageCommentType!
+  addPageCommentReaction(slug: String!, project: String!, page: String!, comment: String!, reaction: String!): Boolean!
+  removePageCommentReaction(slug: String!, project: String!, page: String!, comment: String!, reaction: String!): Boolean!
+  workspaceAddPageComment(slug: String!, page: String!, input: PageCommentInput!): PageCommentListType!
+  workspaceAddPageCommentReply(slug: String!, page: String!, comment: String!, input: PageCommentInput!): PageCommentWithReactionsListType!
+  workspaceUpdatePageComment(slug: String!, page: String!, comment: String!, input: PageCommentInput!): PageCommentType!
+  workspaceResolvePageComment(slug: String!, page: String!, comment: String!): PageCommentType!
+  workspaceUnResolvePageComment(slug: String!, page: String!, comment: String!): PageCommentType!
+  workspaceDeletePageComment(slug: String!, page: String!, comment: String!): Boolean!
+  workspaceRestorePageComment(slug: String!, page: String!, comment: String!): PageCommentType!
+  workspaceAddPageCommentReaction(slug: String!, page: String!, comment: String!, reaction: String!): Boolean!
+  workspaceRemovePageCommentReaction(slug: String!, page: String!, comment: String!, reaction: String!): Boolean!
+  updateEpicUserProperties(slug: String!, project: String!, userProperties: EpicUserPropertyCreateInputType!): EpicUserPropertyType!
+  createEpic(slug: String!, project: String!, epicInput: EpicCreateInputType!): EpicType!
+  updateEpic(slug: String!, project: String!, epic: String!, epicInput: EpicUpdateInputType = null): EpicType!
+  deleteEpic(slug: String!, project: String!, epic: String!): Boolean!
+  createEpicLink(slug: String!, project: String!, epic: String!, linkInput: EpicLinkCreateInputType!): EpicLinkType!
+  updateEpicLink(slug: String!, project: String!, epic: String!, link: String!, linkInput: EpicLinkUpdateInputType!): EpicLinkType!
+  deleteEpicLink(slug: String!, project: String!, epic: String!, link: String!): Boolean!
+  createEpicAttachment(slug: String!, project: String!, epic: String!, attachmentInput: EpicAttachmentCreateInputType!): EpicAttachmentPresignedUrlResponseType!
+  updateEpicAttachment(slug: String!, project: String!, epic: String!, attachment: String!, attachmentInput: EpicAttachmentUpdateInputType!): FileAssetType!
+  deleteEpicAttachment(slug: String!, project: String!, epic: String!, attachment: String!): Boolean!
+  createEpicWorkItem(slug: String!, project: String!, epic: String!, issueInput: IssueCreateInputType!): IssuesType!
+  addExistingWorkItems(slug: String!, project: String!, epic: String!, workItemIds: [String!]!): Boolean!
+  addEpicWorkItemRelation(slug: String!, project: String!, epic: String!, relationType: String!, relatedWorkItemIds: [String!]!): Boolean!
+  addEpicComment(slug: String!, project: String!, epic: String!, commentInput: EpicCommentInputType!): EpicCommentActivityType!
+  deleteEpicComment(slug: String!, project: String!, epic: String!, comment: String!): Boolean!
+  addEpicCommentReply(slug: String!, project: String!, epic: String!, comment: String!, commentInput: EpicCommentInputType!): EpicCommentActivityType!
+  deleteEpicCommentReply(slug: String!, project: String!, epic: String!, comment: String!, reply: String!): Boolean!
+  addEpicCommentReaction(slug: String!, project: String!, epic: String!, comment: String!, reactionInput: CommentReactionInput!): CommentReactionType!
+  removeEpicCommentReaction(slug: String!, project: String!, epic: String!, comment: String!, reactionInput: CommentReactionInput!): CommentReactionType!
+  addEpicPage(slug: String!, project: String!, epic: String!, pageIds: [String!]!): [EpicPageType!]!
+  deleteEpicPage(slug: String!, project: String!, epic: String!, pageIds: [String!]!): Boolean!
+  createSticky(slug: String!, stickyData: StickyCreateUpdateInputType!): StickiesType!
+  updateSticky(slug: String!, sticky: ID!, stickyData: StickyCreateUpdateInputType!): StickiesType!
+  deleteStickies(slug: String!, stickies: [ID!]!): Boolean!
+  createIntakeWorkItem(slug: String!, project: String!, workItemInput: IntakeWorkItemCreateInputType!): IntakeWorkItemType!
+  updateIntakeWorkItem(slug: String!, project: String!, intakeWorkItem: String!, workItemInput: IntakeWorkItemUpdateInputType = null): IntakeWorkItemType!
+  deleteIntakeWorkItem(slug: String!, project: String!, intakeWorkItem: String!): Boolean!
+  addIntakeWorkItemComment(slug: String!, project: String!, intakeWorkItem: String!, commentInput: IntakeWorkItemCommentInputType!): IntakeWorkItemCommentActivityType!
+  deleteIntakeWorkItemComment(slug: String!, project: String!, intakeWorkItem: String!, comment: String!): Boolean!
+  addIntakeWorkItemCommentReaction(slug: String!, project: String!, intakeWorkItem: String!, comment: String!, reactionInput: CommentReactionInput!): CommentReactionType!
+  removeIntakeWorkItemCommentReaction(slug: String!, project: String!, intakeWorkItem: String!, comment: String!, reactionInput: CommentReactionInput!): CommentReactionType!
+  addIntakeWorkItemCommentReply(slug: String!, project: String!, intakeWorkItem: String!, comment: String!, commentInput: IntakeWorkItemCommentInputType!): IntakeWorkItemCommentActivityType!
+  deleteIntakeWorkItemCommentReply(slug: String!, project: String!, intakeWorkItem: String!, comment: String!, reply: String!): Boolean!
+  createIntakeWorkItemAttachment(slug: String!, project: String!, intakeWorkItem: String!, attachmentInput: IntakeWorkItemAttachmentCreateInputType!): IntakeWorkItemAttachmentPresignedUrlResponseType!
+  updateIntakeWorkItemAttachment(slug: String!, project: String!, intakeWorkItem: String!, attachment: String!, attachmentInput: IntakeWorkItemAttachmentUpdateInputType!): FileAssetType!
+  deleteIntakeWorkItemAttachment(slug: String!, project: String!, intakeWorkItem: String!, attachment: String!): Boolean!
+  updateIntakeWorkItemStatus(slug: String!, project: String!, intakeWorkItem: String!, intakeWorkItemStatusInput: IntakeWorkItemStatusInputType!): Boolean!
+  catchUpMarkAsRead(slug: String!, typeId: String!, type: CatchUpTypeEnum = WORK_ITEM): Boolean!
+  catchUpMarkAllAsRead(slug: String!): Boolean!
+  createInitiativeLabel(slug: String!, input: InitiativeLabelCreateInput!): InitiativeLabelType!
+  updateInitiativeLabel(slug: String!, label: String!, input: InitiativeLabelUpdateInput!): InitiativeLabelType!
+  deleteInitiativeLabel(slug: String!, label: String!): Boolean!
+  createInitiative(slug: String!, input: InitiativeCreateInput!): InitiativeType!
+  updateInitiative(slug: String!, initiative: String!, input: InitiativeUpdateInput!): InitiativeType!
+  deleteInitiative(slug: String!, initiative: String!): Boolean!
+  createInitiativeReaction(slug: String!, initiative: String!, input: InitiativeReactionInput!): [InitiativeReactionType!]!
+  deleteInitiativeReaction(slug: String!, initiative: String!, input: InitiativeReactionInput!): [InitiativeReactionType!]!
+  createInitiativeComment(slug: String!, initiative: String!, input: InitiativeCommentInputType!): InitiativeCommentType!
+  updateInitiativeComment(slug: String!, initiative: String!, comment: String!, input: InitiativeCommentInputType!): InitiativeCommentType!
+  deleteInitiativeComment(slug: String!, initiative: String!, comment: String!): Boolean!
+  createInitiativeCommentReaction(slug: String!, initiative: String!, comment: String!, input: InitiativeCommentReactionInput!): [InitiativeCommentReactionType!]!
+  deleteInitiativeCommentReaction(slug: String!, initiative: String!, comment: String!, input: InitiativeCommentReactionInput!): [InitiativeCommentReactionType!]!
+  updateInitiativeUserProperty(slug: String!, input: InitiativeUserPropertyInput!): InitiativeUserPropertyType!
+  createInitiativeLink(slug: String!, initiative: String!, input: InitiativeLinkCreateInput!): InitiativeLinkType!
+  updateInitiativeLink(slug: String!, initiative: String!, link: String!, input: InitiativeLinkUpdateInput!): InitiativeLinkType!
+  deleteInitiativeLink(slug: String!, initiative: String!, link: String!): Boolean!
+  createInitiativeProject(slug: String!, initiative: String!, input: InitiativeProjectInput!): [InitiativeProjectType!]!
+  deleteInitiativeProject(slug: String!, initiative: String!, input: InitiativeProjectInput!): [InitiativeProjectType!]!
+  createInitiativeEpic(slug: String!, initiative: String!, input: InitiativeEpicInput!): [InitiativeEpicType!]!
+  deleteInitiativeEpic(slug: String!, initiative: String!, input: InitiativeEpicInput!): [InitiativeEpicType!]!
+  createInitiativeAttachment(slug: String!, initiative: String!, input: InitiativeAttachmentCreateInput!): InitiativeAttachmentPresignedUrlResponseType!
+  updateInitiativeAttachment(slug: String!, initiative: String!, attachment: String!, input: InitiativeAttachmentUpdateInput!): InitiativeAttachmentType!
+  deleteInitiativeAttachment(slug: String!, initiative: String!, attachment: String!): Boolean!
+  archiveInitiatives(slug: String!, input: ArchivedInitiativesInput!): Boolean!
+  restoreInitiatives(slug: String!, input: ArchivedInitiativesInput!): Boolean!
+  addCollectionPages(slug: String!, collection: String!, input: CollectionPageAddInput!): [CollectionPageType!]!
+  removeCollectionPages(slug: String!, collection: String!, pageIds: [String!] = null, input: CollectionPageAddInput = null): Boolean!
+  createCollection(slug: String!, input: CollectionCreateInput!): CollectionType!
+  deleteCollection(slug: String!, collection: String!): Boolean!
+  updateCollection(slug: String!, collection: String!, input: CollectionUpdateInput!): CollectionType!
+  createCollectionPage(slug: String!, collection: String!, input: CollectionPageCreateInput!): CollectionPageType!
+  addCollectionMember(slug: String!, collection: String!, input: CollectionMemberAddInput!): CollectionMemberType!
+  updateCollectionMember(slug: String!, collection: String!, collectionMember: String!, input: CollectionMemberUpdateInput!): CollectionMemberType!
+  removeCollectionMember(slug: String!, collection: String!, collectionMember: String!): Boolean!
+  completeTour(input: TourTypeInput!): TourType!
+}
+
+type AssetPresignedUrlResponseType {
+  uploadData: JSON!
+  assetId: String!
+  assetUrl: String
+}
+
+enum WorkspaceAssetEnumType {
+  WORKSPACE_LOGO
+  PROJECT_COVER
+  PAGE_DESCRIPTION
+}
+
+enum ProjectAssetEnumType {
+  PROJECT_COVER
+  PAGE_DESCRIPTION
+  ISSUE_DESCRIPTION
+  DRAFT_ISSUE_DESCRIPTION
+  COMMENT_DESCRIPTION
+  ISSUE_ATTACHMENT
+  DRAFT_ISSUE_ATTACHMENT
+}
+
+input ProfileUpdateInputType {
+  mobileTimezoneAutoSet: Boolean
+  isMobileOnboarded: Boolean
+  mobileOnboardingStep: JSON
+}
+
+input UserDeleteInputType {
+  reason: String
+}
+
+enum UserAssetEnumType {
+  USER_AVATAR
+  USER_COVER
+}
+
+input PasswordInputType {
+  password: String!
+}
+
+input WorkspaceSlugVerificationInputType {
+  slug: String!
+}
+
+input WorkspaceCreateInputType {
+  name: String!
+  slug: String!
+  organizationSize: String
+}
+
+input WorkspaceUpdateInputType {
+  name: String
+  organizationSize: String
+}
+
+input IssueCreateInputType {
+  name: String!
+  descriptionHtml: String
+  priority: String
+  labels: [ID!]
+  assignees: [ID!]
+  startDate: DateTime
+  targetDate: DateTime
+  state: ID
+  parent: ID
+  estimatePoint: ID
+  cycleId: ID
+  moduleIds: [ID!]
+}
+
+input IssueUpdateInputType {
+  name: String
+  descriptionHtml: String
+  priority: String
+  labels: [ID!]
+  assignees: [ID!]
+  startDate: DateTime
+  targetDate: DateTime
+  state: ID
+  parent: ID
+  estimatePoint: ID
+}
+
+type IssueAttachmentPresignedUrlResponseType {
+  uploadData: JSON!
+  attachmentId: String!
+  assetUrl: String
+}
+
+input CommentReactionInput {
+  reaction: String!
+}
+
+"""Represents NULL values"""
+scalar Void
+
+input PageInput {
+  name: String!
+  descriptionHtml: String = "<p></p>"
+  logoProps: JSON
+  access: Int! = 2
+  descriptionBinary: String = null
+}
+
+input PageCommentInput {
+  descriptionHtml: String = null
+  descriptionJson: JSON = null
+  referenceStripped: String = null
+}
+
+input EpicUserPropertyCreateInputType {
+  filters: JSON
+  displayFilters: JSON
+  displayProperties: JSON
+}
+
+input EpicCreateInputType {
+  name: String!
+  descriptionHtml: String
+  state: ID
+  priority: String
+  assignees: [ID!]
+  labels: [ID!]
+  startDate: DateTime
+  targetDate: DateTime
+}
+
+input EpicUpdateInputType {
+  name: String
+  descriptionHtml: String
+  state: ID
+  priority: String
+  assignees: [ID!]
+  labels: [ID!]
+  startDate: DateTime
+  targetDate: DateTime
+}
+
+input EpicLinkCreateInputType {
+  title: String
+  url: String!
+}
+
+input EpicLinkUpdateInputType {
+  title: String
+  url: String
+}
+
+type EpicAttachmentPresignedUrlResponseType {
+  uploadData: JSON!
+  attachmentId: String!
+  assetUrl: String
+}
+
+input EpicAttachmentCreateInputType {
+  name: String!
+  type: String!
+  size: Int!
+}
+
+input EpicAttachmentUpdateInputType {
+  attributes: JSON = null
+}
+
+input EpicCommentInputType {
+  commentHtml: String
+}
+
+input StickyCreateUpdateInputType {
+  name: String = ""
+  descriptionHtml: String = ""
+  backgroundColor: String = ""
+}
+
+input IntakeWorkItemCreateInputType {
+  name: String!
+  descriptionHtml: String
+  state: ID
+  priority: String
+  assignees: [ID!]
+  labels: [ID!]
+  targetDate: DateTime
+}
+
+input IntakeWorkItemUpdateInputType {
+  name: String
+  descriptionHtml: String
+  state: ID
+  priority: String
+  assignees: [ID!]
+  labels: [ID!]
+  targetDate: DateTime
+}
+
+input IntakeWorkItemCommentInputType {
+  commentHtml: String
+}
+
+type IntakeWorkItemAttachmentPresignedUrlResponseType {
+  uploadData: JSON!
+  attachmentId: String!
+  assetUrl: String
+}
+
+input IntakeWorkItemAttachmentCreateInputType {
+  name: String!
+  type: String!
+  size: Int!
+}
+
+input IntakeWorkItemAttachmentUpdateInputType {
+  attributes: JSON = null
+}
+
+input IntakeWorkItemStatusInputType {
+  status: Int
+  snoozedTill: DateTime
+  duplicateTo: ID
+}
+
+input InitiativeLabelCreateInput {
+  name: String!
+  description: String
+  color: String
+}
+
+input InitiativeLabelUpdateInput {
+  name: String
+  description: String
+  color: String
+}
+
+input InitiativeCreateInput {
+  name: String!
+  descriptionHtml: String
+  lead: String
+  startDate: String
+  endDate: String
+  logoProps: JSON
+  state: InitiativeState
+  labels: [String!]
+}
+
+input InitiativeUpdateInput {
+  name: String
+  descriptionHtml: String
+  lead: String
+  startDate: String
+  endDate: String
+  logoProps: JSON
+  state: InitiativeState
+  labels: [String!]
+}
+
+input InitiativeReactionInput {
+  reactions: [String!]!
+}
+
+input InitiativeCommentInputType {
+  commentHtml: String
+}
+
+input InitiativeCommentReactionInput {
+  reactions: [String!]!
+}
+
+input InitiativeUserPropertyInput {
+  filters: JSON
+  displayFilters: JSON
+  displayProperties: JSON
+}
+
+input InitiativeLinkCreateInput {
+  url: String!
+  title: String
+}
+
+input InitiativeLinkUpdateInput {
+  url: String
+  title: String
+}
+
+input InitiativeProjectInput {
+  projects: [String!]!
+}
+
+input InitiativeEpicInput {
+  epics: [String!]!
+}
+
+type InitiativeAttachmentPresignedUrlResponseType {
+  uploadData: JSON!
+  attachmentId: String!
+  assetUrl: String
+}
+
+input InitiativeAttachmentCreateInput {
+  name: String
+  type: String
+  size: Int
+}
+
+input InitiativeAttachmentUpdateInput {
+  attributes: JSON
+}
+
+input ArchivedInitiativesInput {
+  initiativeIds: [String!]!
+}
+
+input CollectionPageAddInput {
+  pageIds: [ID!]!
+}
+
+input CollectionCreateInput {
+  name: String!
+  logoProps: JSON
+  sortOrder: Float
+  access: CollectionAccess
+}
+
+input CollectionUpdateInput {
+  name: String = null
+  logoProps: JSON
+  sortOrder: Float
+  access: CollectionAccess
+}
+
+input CollectionPageCreateInput {
+  name: String
+  descriptionHtml: String
+  logoProps: JSON
+  access: Int
+}
+
+input CollectionMemberAddInput {
+  member: ID!
+  access: CollectionMemberAccessEnum = VIEW
+}
+
+input CollectionMemberUpdateInput {
+  access: CollectionMemberAccessEnum!
+}
+
+input TourTypeInput {
+  homeTour: Boolean = null
+}
