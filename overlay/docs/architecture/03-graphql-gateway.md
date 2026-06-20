@@ -110,6 +110,19 @@ QueryType/MutationType-инстансов (last-wins на коллизии по�
 Без токена → `{"message":"Authentication required"}` 401 (паритет с Cloud). Резолверы
 берут юзера через `_user(info)` = `info.context.user`. См. [04-auth-flows](04-auth-flows.md).
 
+## ⚠️ Авторизация: membership обязателен (не только аутентификация)
+
+Аутентификация (валидный JWT) ≠ авторизация. Резолвер, который берёт `slug`/`project` из
+аргументов и фильтрует `Project.objects.filter(workspace__slug=slug, …)` **без проверки
+членства**, открывает **cross-tenant IDOR**: член воркспейса A, зная `slug` + UUID воркспейса B,
+дотянется до данных B. Тот же класс, что апстрим закрывал в bulk-REST (#9269/#9270).
+
+**Правило:** любой project-scoped резолвер ОБЯЗАН резолвить проект через
+**`_member_project(info, slug, project_id)`** (`resolvers.py`) — он возвращает проект ТОЛЬКО для
+**активного `WorkspaceMember`**, иначе `None` (вызывающий бейлит как при отсутствии проекта).
+Сырой `Project.objects.filter(workspace__slug=…)` в резолверах **запрещён** (footgun, старые
+небезопасные `_project` удалены). Покрытие — `tests/contract/app/test_graphql_authz.py`.
+
 ## Состояние реализации (на момент сессии)
 
 - **Ядро (resolvers.py + mutations/):** стартовый флоу, home (favorites/recent/catchUps/

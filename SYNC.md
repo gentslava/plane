@@ -75,6 +75,13 @@ git push origin plus                     # push в plus → CI пересобе�
 ключи (напр. `iw.app_switcher.*`) добавить в `packages/i18n/src/locales/en/common.json` (fallbackNS
 ищет по всем namespace; `keySeparator:"."`). Затем redeploy MyPlane (миграции preview совместимы).
 
+> **ПОСЛЕДУЮЩИЕ синки — проще (merge-tree больше НЕ нужен).** После первого merge `upstream/preview`
+> стал предком `plus` (через merge-коммит), поэтому общий предок есть → достаточно обычного
+> `git fetch upstream && git checkout plus && git merge upstream/preview` (merge-base = прошлый
+> синк-пойнт, в дельте только новые upstream-коммиты, конфликтов минимум). 2026-06-20: так влиты
+> 5 коммитов, единственный конфликт `sub_issue.py` (eyriehq-валидация + upstream IDOR-scope —
+> объединить обе стороны). Merge-tree из листинга выше — только для ПЕРВОГО синка (когда общего предка нет).
+
 > `upstream` fetch ограничен `master` + `preview` (`git config remote.upstream.fetch`),
 > чтобы не тянуть сотни feature-веток. История: `plus` уже слит с preview (53a323d559) 2026-06-18.
 

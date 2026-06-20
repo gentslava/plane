@@ -100,3 +100,21 @@ session-token — `apps/api/plane/authentication/mobile/`. TTL: access 15 мин
   `csrf_exempt` — функционален (приложение не шлёт Django-CSRF). `[MOBILE-AUTH]`-лог за
   env `MOBILE_DEBUG_LOG=1` (по умолчанию off в проде).
 - Прокси-маршрут `/m/auth` — `apps/proxy/Caddyfile.ce`.
+
+## ⚠️ Deploy-требование: env для авторизации приложения
+
+`/api/instances/` отдаёт `app_base_url` напрямую из `settings.APP_BASE_URL`
+(`os.environ.get("APP_BASE_URL")`, `common.py`) — **из env, не из БД**. Приложение читает
+`app_base_url` для auth-флоу: если пусто (`None`) → **не авторизуется**. Поэтому в env инстанса
+(и в проброс `x-app-env` compose) ОБЯЗАТЕЛЬНЫ:
+
+```
+APP_BASE_URL=https://<instance>
+SPACE_BASE_URL=https://<instance>/spaces
+ADMIN_BASE_URL=https://<instance>/god-mode
+APP_VERSION=<vX.Y.Z или X.Y.Z>   # → current_version; иначе дефолт 1.3.1 < min-версии приложения 1.5.0
+```
+
+Одного `WEB_URL` НЕ хватает. Грабля прода 2026-06-20: было только `WEB_URL` → `app_base_url=None` →
+приложение не входило. (Парсер версии `VersionParseHelper` принимает `vX.Y.Z` И `X.Y.Z` — префикс `v`
+опционален; не-семвер `latest` → null.)
