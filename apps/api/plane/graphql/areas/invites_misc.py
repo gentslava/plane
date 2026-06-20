@@ -39,7 +39,7 @@ from plane.db.models import (
     WorkspaceMember,
     WorkspaceMemberInvite,
 )
-from plane.graphql.resolvers import _user
+from plane.graphql.resolvers import _member_project, _user
 
 query = QueryType()
 mutation = MutationType()
@@ -205,7 +205,7 @@ def resolve_is_project_public(_, info, slug, project):
     ).first()
     if board is None:
         return None
-    item = Project.objects.filter(workspace__slug=slug, id=project).first()
+    item = _member_project(info, slug, project)
     if item is None:
         return None
     return item

@@ -44,7 +44,7 @@ from plane.db.models import (
     StateGroup,
 )
 from plane.db.models.intake import IntakeIssueStatus, SourceType
-from plane.graphql.resolvers import _page, _user
+from plane.graphql.resolvers import _member_project, _page, _user
 
 query = QueryType()
 mutation = MutationType()
@@ -55,10 +55,6 @@ intake_comment_type = ObjectType("IntakeWorkItemCommentActivityType")
 
 
 # --- helpers -------------------------------------------------------------------
-
-
-def _project(slug, project_id):
-    return Project.objects.filter(workspace__slug=slug, id=project_id).first()
 
 
 def _intake(slug, project_id):
@@ -454,7 +450,7 @@ def resolve_create_intake_work_item(_, info, slug, project, workItemInput):
     user = _user(info)
     if user is None:
         return None
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None:
         return None
     intake = _intake(slug, project)
@@ -526,7 +522,7 @@ def resolve_update_intake_work_item(_, info, slug, project, intakeWorkItem, work
     user = _user(info)
     if user is None:
         return None
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None:
         return None
     intake_issue = _intake_issue(slug, project, intakeWorkItem)
@@ -601,7 +597,7 @@ def resolve_update_intake_work_item_status(_, info, slug, project, intakeWorkIte
     user = _user(info)
     if user is None:
         return False
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None:
         return False
     intake_issue = _intake_issue(slug, project, intakeWorkItem)
@@ -675,7 +671,7 @@ def resolve_add_intake_comment(_, info, slug, project, intakeWorkItem, commentIn
     user = _user(info)
     if user is None:
         return None
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None:
         return None
     intake_issue = _intake_issue(slug, project, intakeWorkItem)
@@ -690,7 +686,7 @@ def resolve_delete_intake_comment(_, info, slug, project, intakeWorkItem, commen
     user = _user(info)
     if user is None:
         return False
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None:
         return False
     intake_issue = _intake_issue(slug, project, intakeWorkItem)
@@ -707,7 +703,7 @@ def resolve_add_intake_comment_reply(_, info, slug, project, intakeWorkItem, com
     user = _user(info)
     if user is None:
         return None
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None:
         return None
     intake_issue = _intake_issue(slug, project, intakeWorkItem)
@@ -727,7 +723,7 @@ def resolve_delete_intake_comment_reply(_, info, slug, project, intakeWorkItem, 
     user = _user(info)
     if user is None:
         return False
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None:
         return False
     intake_issue = _intake_issue(slug, project, intakeWorkItem)
@@ -753,7 +749,7 @@ def resolve_add_intake_comment_reaction(_, info, slug, project, intakeWorkItem, 
     user = _user(info)
     if user is None:
         return None
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None:
         return None
     comment_obj = IssueComment.objects.filter(project=p, id=comment).first()
@@ -777,7 +773,7 @@ def resolve_remove_intake_comment_reaction(_, info, slug, project, intakeWorkIte
     user = _user(info)
     if user is None:
         return None
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None:
         return None
     comment_obj = IssueComment.objects.filter(project=p, id=comment).first()
@@ -798,7 +794,7 @@ def resolve_create_intake_attachment(_, info, slug, project, intakeWorkItem, att
     user = _user(info)
     if user is None:
         return None
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None:
         return None
     intake_issue = _intake_issue(slug, project, intakeWorkItem)

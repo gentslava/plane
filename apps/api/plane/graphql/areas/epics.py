@@ -35,7 +35,7 @@ from plane.db.models import (
     State,
     Workspace,
 )
-from plane.graphql.resolvers import _page, _user
+from plane.graphql.resolvers import _member_project, _page, _user
 
 query = QueryType()
 mutation = MutationType()
@@ -83,10 +83,6 @@ _RELATION_BUCKETS = {
 
 
 # --- helpers ------------------------------------------------------------------------
-
-
-def _project(slug, project_id):
-    return Project.objects.filter(workspace__slug=slug, id=project_id).first()
 
 
 def _epic(slug, project_id, epic_id):
@@ -639,7 +635,7 @@ def resolve_create_epic(_, info, slug, project, epicInput):
     user = _user(info)
     if user is None:
         return None
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None:
         return None
     epic_type_obj = _epic_type_for_workspace(slug)
@@ -883,7 +879,7 @@ def resolve_create_epic_work_item(_, info, slug, project, epic, issueInput):
     user = _user(info)
     if user is None:
         return None
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     parent = _epic(slug, project, epic)
     if p is None or parent is None:
         return None
@@ -925,7 +921,7 @@ def resolve_add_existing_work_items(_, info, slug, project, epic, workItemIds):
     user = _user(info)
     if user is None:
         return False
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     epic_issue = _epic(slug, project, epic)
     if p is None or epic_issue is None:
         return False
@@ -938,7 +934,7 @@ def resolve_add_epic_work_item_relation(_, info, slug, project, epic, relationTy
     user = _user(info)
     if user is None:
         return False
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     epic_issue = _epic(slug, project, epic)
     if p is None or epic_issue is None:
         return False
@@ -1040,7 +1036,7 @@ def resolve_add_epic_comment_reaction(_, info, slug, project, epic, comment, rea
     user = _user(info)
     if user is None:
         return None
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     comment_obj = IssueComment.objects.filter(project_id=project, issue_id=epic, id=comment).first()
     if p is None or comment_obj is None:
         return None

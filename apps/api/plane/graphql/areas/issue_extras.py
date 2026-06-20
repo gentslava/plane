@@ -38,7 +38,7 @@ from plane.db.models import (
     Project,
     UserRecentVisit,
 )
-from plane.graphql.resolvers import _user
+from plane.graphql.resolvers import _member_project, _user
 
 query = QueryType()
 
@@ -565,7 +565,7 @@ def resolve_estimate_points(_, info, slug, project):
     user = _user(info)
     if user is None:
         return []
-    proj = Project.objects.filter(workspace__slug=slug, id=project).first()
+    proj = _member_project(info, slug, project)
     if proj is None or proj.estimate_id is None:
         return []
     return list(

@@ -44,6 +44,7 @@ from plane.db.models import (
     State,
 )
 from plane.graphql.context import get_user
+from plane.graphql.resolvers import _member_project
 
 
 def _to_date(value):
@@ -152,11 +153,6 @@ mutation = MutationType()
 # --- helpers -------------------------------------------------------------------
 
 
-def _project(slug, project_id):
-    """Project scoped to the workspace slug, or None."""
-    return Project.objects.filter(workspace__slug=slug, id=project_id).first()
-
-
 def _issue(project, issue_id):
     """Issue scoped to a project, or None."""
     if project is None:
@@ -187,7 +183,7 @@ def resolve_create_issue_v2(_, info, slug, project, issueInput):
     user = get_user(info)
     if user is None:
         return None
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None:
         return None
 
@@ -266,7 +262,7 @@ def resolve_update_issue_v2(_, info, slug, project, id, issueInput=None):
     user = get_user(info)
     if user is None:
         return None
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     issue = _issue(p, id)
     if issue is None:
         return None
@@ -321,7 +317,7 @@ def resolve_delete_work_item(_, info, slug, project, workItem):
     user = get_user(info)
     if user is None:
         return False
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     issue = _issue(p, workItem)
     if issue is None:
         return False
@@ -334,7 +330,7 @@ def resolve_archive_work_item(_, info, slug, project, workItem):
     user = get_user(info)
     if user is None:
         return False
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     issue = _issue(p, workItem)
     if issue is None:
         return False
@@ -349,7 +345,7 @@ def resolve_unarchive_work_item(_, info, slug, project, workItem):
     user = get_user(info)
     if user is None:
         return False
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     issue = _issue(p, workItem)
     if issue is None:
         return False
@@ -367,7 +363,7 @@ def resolve_create_sub_issue(_, info, slug, project, parentIssueId, subIssueIds)
     user = get_user(info)
     if user is None:
         return False
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     parent = _issue(p, parentIssueId)
     if parent is None:
         return False
@@ -380,7 +376,7 @@ def resolve_remove_sub_issue(_, info, slug, project, parentIssueId, subIssueId):
     user = get_user(info)
     if user is None:
         return False
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None:
         return False
     Issue.objects.filter(project=p, id=subIssueId, parent_id=parentIssueId).update(parent=None, updated_by=user)
@@ -393,7 +389,7 @@ def resolve_add_existing_work_items(_, info, slug, project, epic, workItemIds):
     user = get_user(info)
     if user is None:
         return False
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     epic_issue = _issue(p, epic)
     if epic_issue is None:
         return False
@@ -410,7 +406,7 @@ def resolve_issue_cycle(_, info, slug, project, issue, cycle=None):
     user = get_user(info)
     if user is None:
         return False
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     issue_obj = _issue(p, issue)
     if issue_obj is None:
         return False
@@ -435,7 +431,7 @@ def resolve_issue_modules(_, info, slug, project, issue, modules):
     user = get_user(info)
     if user is None:
         return False
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     issue_obj = _issue(p, issue)
     if issue_obj is None:
         return False
@@ -468,7 +464,7 @@ def resolve_create_cycle_issue(_, info, slug, project, cycle, issues):
     user = get_user(info)
     if user is None:
         return False
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None or not Cycle.objects.filter(project=p, id=cycle).exists():
         return False
 
@@ -494,7 +490,7 @@ def resolve_delete_cycle_issue(_, info, slug, project, cycle, issue):
     user = get_user(info)
     if user is None:
         return False
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None:
         return False
     CycleIssue.objects.filter(project=p, cycle_id=cycle, issue_id=issue).delete()
@@ -506,7 +502,7 @@ def resolve_create_module_issues(_, info, slug, project, module, issues):
     user = get_user(info)
     if user is None:
         return False
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None or not Module.objects.filter(project=p, id=module).exists():
         return False
 
@@ -531,7 +527,7 @@ def resolve_delete_module_issue(_, info, slug, project, module, issue):
     user = get_user(info)
     if user is None:
         return False
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None:
         return False
     ModuleIssue.objects.filter(project=p, module_id=module, issue_id=issue).delete()
@@ -559,7 +555,7 @@ def resolve_add_issue_comment(_, info, slug, project, issue, commentHtml):
     user = get_user(info)
     if user is None:
         return False
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     issue_obj = _issue(p, issue)
     if issue_obj is None:
         return False
@@ -572,7 +568,7 @@ def resolve_add_issue_comment_v2(_, info, slug, project, issue, commentHtml):
     user = get_user(info)
     if user is None:
         return None
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     issue_obj = _issue(p, issue)
     if issue_obj is None:
         return None
@@ -584,7 +580,7 @@ def resolve_delete_work_item_comment(_, info, slug, project, workItem, comment):
     user = get_user(info)
     if user is None:
         return False
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None:
         return False
     IssueComment.objects.filter(project=p, issue_id=workItem, id=comment).delete()
@@ -596,7 +592,7 @@ def resolve_add_work_item_comment_reply(_, info, slug, project, workItem, commen
     user = get_user(info)
     if user is None:
         return None
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     issue_obj = _issue(p, workItem)
     if issue_obj is None:
         return None
@@ -611,7 +607,7 @@ def resolve_delete_work_item_comment_reply(_, info, slug, project, workItem, com
     user = get_user(info)
     if user is None:
         return False
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None:
         return False
     IssueComment.objects.filter(project=p, issue_id=workItem, id=reply, parent_id=comment).delete()
@@ -634,7 +630,7 @@ def resolve_add_work_item_comment_reaction(_, info, slug, project, workItem, com
     user = get_user(info)
     if user is None:
         return None
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None:
         return None
     comment_obj = IssueComment.objects.filter(project=p, issue_id=workItem, id=comment).first()
@@ -658,7 +654,7 @@ def resolve_remove_work_item_comment_reaction(_, info, slug, project, workItem, 
     user = get_user(info)
     if user is None:
         return None
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None:
         return None
     comment_obj = IssueComment.objects.filter(project=p, issue_id=workItem, id=comment).first()
@@ -679,7 +675,7 @@ def resolve_create_issue_link(_, info, slug, project, issue, url, title=""):
     user = get_user(info)
     if user is None:
         return None
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     issue_obj = _issue(p, issue)
     if issue_obj is None:
         return None
@@ -699,7 +695,7 @@ def resolve_update_issue_link(_, info, slug, project, issue, link, title=None, u
     user = get_user(info)
     if user is None:
         return None
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None:
         return None
     link_obj = IssueLink.objects.filter(project=p, issue_id=issue, id=link).first()
@@ -722,7 +718,7 @@ def resolve_remove_issue_link(_, info, slug, project, issue, link):
     user = get_user(info)
     if user is None:
         return False
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None:
         return False
     IssueLink.objects.filter(project=p, issue_id=issue, id=link).delete()
@@ -737,7 +733,7 @@ def resolve_add_issue_relation(_, info, slug, project, issue, relationType, rela
     user = get_user(info)
     if user is None:
         return False
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     issue_obj = _issue(p, issue)
     if issue_obj is None:
         return False
@@ -770,7 +766,7 @@ def resolve_subscribe_issue(_, info, slug, project, issue):
     user = get_user(info)
     if user is None:
         return False
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     issue_obj = _issue(p, issue)
     if issue_obj is None:
         return False
@@ -788,7 +784,7 @@ def resolve_unsubscribe_issue(_, info, slug, project, issue):
     user = get_user(info)
     if user is None:
         return False
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None:
         return False
     IssueSubscriber.objects.filter(project=p, issue_id=issue, subscriber=user).delete()
@@ -807,7 +803,7 @@ def resolve_create_issue_attachment(_, info, slug, project, issue, name, type, s
     user = get_user(info)
     if user is None:
         return None
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     issue_obj = _issue(p, issue)
     if issue_obj is None:
         return None
@@ -858,7 +854,7 @@ def resolve_update_issue_attachment(_, info, slug, project, issue, attachment, a
     user = get_user(info)
     if user is None:
         return None
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None:
         return None
     asset = FileAsset.objects.filter(
@@ -879,7 +875,7 @@ def resolve_delete_issue_attachment(_, info, slug, project, issue, attachment):
     user = get_user(info)
     if user is None:
         return False
-    p = _project(slug, project)
+    p = _member_project(info, slug, project)
     if p is None:
         return False
     asset = FileAsset.objects.filter(

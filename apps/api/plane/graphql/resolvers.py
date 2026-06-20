@@ -108,6 +108,23 @@ def _user(info):
     return user
 
 
+def _member_project(info, slug, project_id):
+    """The project scoped to ``slug``+``project_id`` — but ONLY when the request user is
+    an active member of that workspace. Authentication (valid mobile JWT) is not
+    authorization: without this check a member of workspace A could mutate/read
+    workspace B's data by passing B's slug + known UUIDs (cross-tenant IDOR). Mirrors
+    upstream's workspace-scoping of bulk endpoints (#9269/#9270). Returns None for
+    non-members so callers bail exactly as they do for a missing project."""
+    user = _user(info)
+    if user is None:
+        return None
+    if not WorkspaceMember.objects.filter(
+        workspace__slug=slug, member=user, is_active=True
+    ).exists():
+        return None
+    return Project.objects.filter(workspace__slug=slug, id=project_id).first()
+
+
 def _page(results, cursor=None):
     """*PaginatorResponse with valid Plane cursors ("limit:page:is_prev") AND real
     offset slicing.
