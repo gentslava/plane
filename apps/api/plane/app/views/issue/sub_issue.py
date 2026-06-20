@@ -212,10 +212,11 @@ class SubIssuesEndpoint(BaseAPIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # Hierarchy depth validation
+        # Hierarchy depth validation (eyriehq)
         validate_sub_issues_bulk(parent_issue, sub_issue_ids)
 
-        sub_issues = Issue.issue_objects.filter(id__in=sub_issue_ids)
+        # Scope to workspace to prevent cross-tenant IDOR (upstream #9269/#9270)
+        sub_issues = Issue.issue_objects.filter(id__in=sub_issue_ids, workspace__slug=slug)
 
         for sub_issue in sub_issues:
             sub_issue.parent = parent_issue
