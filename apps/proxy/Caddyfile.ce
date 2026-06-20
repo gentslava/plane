@@ -15,6 +15,12 @@
 
 	reverse_proxy /auth/* api:8000
 
+	# OVERLAY: mobile-auth — мост авторизации нативного приложения (/m/auth) в api
+	reverse_proxy /m/auth* api:8000
+
+	# OVERLAY: mobile-graphql — GraphQL-шлюз нативного приложения (/graphql/) в api
+	reverse_proxy /graphql/* api:8000
+
 	reverse_proxy /static/* api:8000
 
 	reverse_proxy /{$BUCKET_NAME}/* plane-minio:9000

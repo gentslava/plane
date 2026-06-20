@@ -46,6 +46,13 @@ from .views import (
     GiteaOauthInitiateSpaceEndpoint,
 )
 
+# OVERLAY: mobile-auth
+from plane.authentication.mobile.views import (
+    MobileSessionTokenEndpoint,
+    MobileRefreshTokenEndpoint,
+    MobileTokenCheckEndpoint,
+)
+
 urlpatterns = [
     # credentials
     path("sign-in/", SignInAuthEndpoint.as_view(), name="sign-in"),
@@ -149,5 +156,21 @@ urlpatterns = [
         "spaces/gitea/callback/",
         GiteaCallbackSpaceEndpoint.as_view(),
         name="space-gitea-callback",
+    ),
+    # OVERLAY: mobile-auth
+    path(
+        "mobile/session-token/",
+        MobileSessionTokenEndpoint.as_view(),
+        name="mobile-session-token",
+    ),
+    path(
+        "mobile/refresh-token/",
+        MobileRefreshTokenEndpoint.as_view(),
+        name="mobile-refresh-token",
+    ),
+    path(
+        "mobile/token-check/",
+        MobileTokenCheckEndpoint.as_view(),
+        name="mobile-token-check",
     ),
 ]

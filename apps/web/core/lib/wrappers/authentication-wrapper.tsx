@@ -58,6 +58,12 @@ export const AuthenticationWrapper = observer(function AuthenticationWrapper(pro
   const getWorkspaceRedirectionUrl = (): string => {
     let redirectionRoute = "/create-workspace";
 
+    // OVERLAY: mobile-auth — мост /m/auth обслуживается api (не React-роут);
+    // отдаём путь как есть, навигация по нему будет полной (window.location).
+    if (nextPath && nextPath.toString().startsWith("/m/")) {
+      return nextPath.toString();
+    }
+
     // validating the nextPath from the router query
     if (nextPath && isValidURL(nextPath.toString())) {
       redirectionRoute = nextPath.toString();
@@ -92,6 +98,11 @@ export const AuthenticationWrapper = observer(function AuthenticationWrapper(pro
     else {
       if (currentUserProfile?.id && isUserOnboard) {
         const currentRedirectRoute = getWorkspaceRedirectionUrl();
+        // OVERLAY: mobile-auth — /m/* обслуживается api (мост мобильного auth) → полная навигация
+        if (currentRedirectRoute.startsWith("/m/") && typeof window !== "undefined") {
+          window.location.replace(currentRedirectRoute);
+          return <></>;
+        }
         router.push(currentRedirectRoute);
         return <></>;
       } else {
