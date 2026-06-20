@@ -1,102 +1,79 @@
-/**
- * Copyright 2018 Google Inc. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *     http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// OVERLAY: pwa — service worker дистрибутива Plus (gentslava/plane).
+//
+// Plane — API-зависимое приложение, поэтому цель SW здесь: устанавливаемость,
+// быстрый повторный запуск и аккуратная офлайн-оболочка (не полный офлайн).
+// Стратегии:
+//   - навигация (SPA-оболочка): network-first → офлайн отдаём закэшированный "/"
+//   - статика (assets/шрифты/иконки): stale-while-revalidate
+//   - API / auth / uploads / live / spaces / god-mode: всегда из сети (не кэшируем)
+//
+// Версию кэша поднимать при изменении стратегии — старые кэши чистятся на activate.
 
-// If the loader is already loaded, just stop.
-if (!self.define) {
-  let registry = {};
+const VERSION = "v1";
+const SHELL_CACHE = `plane-shell-${VERSION}`;
+const ASSET_CACHE = `plane-assets-${VERSION}`;
+const SHELL_URL = "/";
 
-  // Used for `eval` and `importScripts` where we can't get script URL by other means.
-  // In both cases, it's safe to use a global var because those functions are synchronous.
-  let nextDefineUri;
+// Префиксы, которые НИКОГДА не кэшируем (динамика/бэкенд).
+const BYPASS_PREFIXES = ["/api", "/auth", "/uploads", "/live", "/spaces", "/god-mode"];
 
-  const singleRequire = (uri, parentUri) => {
-    uri = new URL(uri + ".js", parentUri).href;
-    return (
-      registry[uri] ||
-      new Promise((resolve) => {
-        if ("document" in self) {
-          const script = document.createElement("script");
-          script.src = uri;
-          script.onload = resolve;
-          document.head.appendChild(script);
-        } else {
-          nextDefineUri = uri;
-          importScripts(uri);
-          resolve();
-        }
-      }).then(() => {
-        let promise = registry[uri];
-        if (!promise) {
-          throw new Error(`Module ${uri} didn’t register its module`);
-        }
-        return promise;
-      })
-    );
-  };
-
-  self.define = (depsNames, factory) => {
-    const uri = nextDefineUri || ("document" in self ? document.currentScript.src : "") || location.href;
-    if (registry[uri]) {
-      // Module is already loading or loaded.
-      return;
-    }
-    let exports = {};
-    const require = (depUri) => singleRequire(depUri, uri);
-    const specialDeps = {
-      module: { uri },
-      exports,
-      require,
-    };
-    registry[uri] = Promise.all(depsNames.map((depName) => specialDeps[depName] || require(depName))).then((deps) => {
-      factory(...deps);
-      return exports;
-    });
-  };
-}
-define(["./workbox-9f2f79cf"], function (workbox) {
-  "use strict";
-
-  importScripts();
-  self.skipWaiting();
-  workbox.clientsClaim();
-  workbox.registerRoute(
-    "/",
-    new workbox.NetworkFirst({
-      cacheName: "start-url",
-      plugins: [
-        {
-          cacheWillUpdate: async ({ request, response, event, state }) => {
-            if (response && response.type === "opaqueredirect") {
-              return new Response(response.body, {
-                status: 200,
-                statusText: "OK",
-                headers: response.headers,
-              });
-            }
-            return response;
-          },
-        },
-      ],
-    }),
-    "GET"
-  );
-  workbox.registerRoute(
-    /.*/i,
-    new workbox.NetworkOnly({
-      cacheName: "dev",
-      plugins: [],
-    }),
-    "GET"
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    caches
+      .open(SHELL_CACHE)
+      .then((cache) => cache.add(SHELL_URL))
+      .catch(() => undefined)
+      .then(() => self.skipWaiting())
   );
 });
-//# sourceMappingURL=sw.js.map
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches
+      .keys()
+      .then((keys) =>
+        Promise.all(keys.filter((k) => k !== SHELL_CACHE && k !== ASSET_CACHE).map((k) => caches.delete(k)))
+      )
+      .then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener("fetch", (event) => {
+  const { request } = event;
+  if (request.method !== "GET") return;
+
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin) return; // только свой origin
+  if (BYPASS_PREFIXES.some((p) => url.pathname === p || url.pathname.startsWith(p + "/"))) return;
+
+  // Навигация — network-first, офлайн → закэшированная оболочка "/"
+  if (request.mode === "navigate") {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          const copy = response.clone();
+          caches.open(SHELL_CACHE).then((cache) => cache.put(SHELL_URL, copy));
+          return response;
+        })
+        .catch(() => caches.match(SHELL_URL).then((cached) => cached || Response.error()))
+    );
+    return;
+  }
+
+  // Статика — stale-while-revalidate
+  event.respondWith(
+    caches.open(ASSET_CACHE).then((cache) =>
+      cache.match(request).then((cached) => {
+        const network = fetch(request)
+          .then((response) => {
+            if (response && response.status === 200 && response.type === "basic") {
+              cache.put(request, response.clone());
+            }
+            return response;
+          })
+          .catch(() => cached);
+        return cached || network;
+      })
+    )
+  );
+});
