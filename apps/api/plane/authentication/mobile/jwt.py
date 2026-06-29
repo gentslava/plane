@@ -111,9 +111,19 @@ def decode_token(
 class MobileJWTAuthentication(BaseAuthentication):
     """DRF authentication backend for ``Authorization: Bearer <jwt>``.
 
-    Returns ``None`` (declining authentication, not failing it) when there is no
-    Bearer header, so the cookie/session flow used by the rest of Plane keeps
-    working untouched. Only access tokens are accepted here.
+    DECLINES (returns ``None``) rather than failing whenever the Bearer cannot
+    be turned into an authenticated user — no header, malformed header, or an
+    expired / invalid / wrong-type token. Declining matters: a raised
+    ``AuthenticationFailed`` here becomes a DRF 401 *before* permission checks,
+    so it would also reject ``AllowAny`` public endpoints (``/api/instances/``,
+    ``/auth/get-csrf-token/``) that the native app must reach to recover its
+    session once the 15-min access token lapses — deadlocking it into an
+    infinite loading spinner. By declining instead, protected endpoints still
+    return 401 via ``IsAuthenticated`` (no weakening), while public endpoints
+    stay reachable — matching Plane Cloud, where these answer regardless of
+    Bearer validity. Only valid access tokens authenticate. The lenient
+    token-check / refresh-token recovery endpoints decode separately with
+    ``verify_exp=False``.
     """
 
     keyword = "Bearer"
@@ -130,16 +140,21 @@ class MobileJWTAuthentication(BaseAuthentication):
             return None
 
         token = parts[1]
-        payload = decode_token(token, expected_type="access")
+        try:
+            payload = decode_token(token, expected_type="access")
+        except AuthenticationFailed:
+            # Expired / malformed / non-access Bearer: decline so public
+            # endpoints stay reachable for session recovery (see class docstring).
+            return None
 
         user_id = payload.get("user_id")
         if not user_id:
-            raise AuthenticationFailed("Invalid token payload.")
+            return None
 
         try:
             user = User.objects.get(id=user_id, is_active=True)
         except User.DoesNotExist:
-            raise AuthenticationFailed("User not found or inactive.")
+            return None
 
         return (user, token)
 
