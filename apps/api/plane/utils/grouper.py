@@ -5,7 +5,17 @@
 # Django imports
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.contrib.postgres.fields import ArrayField
-from django.db.models import Q, UUIDField, Value, QuerySet, OuterRef, Subquery
+from django.db.models import (
+    BooleanField,
+    Case,
+    OuterRef,
+    Q,
+    QuerySet,
+    Subquery,
+    UUIDField,
+    Value,
+    When,
+)
 from django.db.models.functions import Coalesce
 
 # Module imports
@@ -25,11 +35,40 @@ from plane.db.models import (
 from typing import Optional, Dict, Tuple, Any, Union, List
 
 
+def annotate_parent_is_epic(queryset: QuerySet[Issue]) -> QuerySet[Issue]:
+    """Annotate each issue with whether its parent is an epic.
+
+    ``issue_on_results`` always selects ``parent_is_epic`` (see
+    ``required_fields``), so every endpoint that funnels its queryset through
+    it must add this annotation first — otherwise Django raises
+    ``FieldError: Cannot resolve keyword 'parent_is_epic'``.
+
+    Idempotent: a queryset that already carries the annotation is returned
+    unchanged, so it is safe to call from both an endpoint's ``apply_annotations``
+    and ``issue_queryset_grouper`` without double-annotating.
+    """
+    if "parent_is_epic" in queryset.query.annotations:
+        return queryset
+    return queryset.annotate(
+        # IW: flag indicating whether this issue's parent is an epic
+        parent_is_epic=Case(
+            When(parent__type__is_epic=True, then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        )
+    )
+
+
 def issue_queryset_grouper(
     queryset: QuerySet[Issue],
     group_by: Optional[str],
     sub_group_by: Optional[str],
 ) -> QuerySet[Issue]:
+    # Every caller eventually selects `parent_is_epic` (via `issue_on_results`
+    # or a manual `.values(...)`). Annotate it once here so each endpoint's
+    # queryset is guaranteed to have the field (prevents FieldError 500s).
+    queryset = annotate_parent_is_epic(queryset)
+
     FIELD_MAPPER: Dict[str, str] = {
         "label_ids": "labels__id",
         "assignee_ids": "assignees__id",

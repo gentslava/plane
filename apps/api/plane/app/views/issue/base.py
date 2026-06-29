@@ -67,6 +67,7 @@ from plane.db.models import (
 from plane.utils.filters import ComplexFilterBackend, IssueFilterSet
 from plane.utils.global_paginator import paginate
 from plane.utils.grouper import (
+    annotate_parent_is_epic,
     issue_group_values,
     issue_on_results,
     issue_queryset_grouper,
@@ -138,14 +139,8 @@ class IssueListEndpoint(BaseAPIView):
                 .annotate(count=Func(F("id"), function="Count"))
                 .values("count")
             )
-            .annotate(
-                # IW: flag indicating whether this issue's parent is an epic
-                parent_is_epic=Case(
-                    When(parent__type__is_epic=True, then=Value(True)),
-                    default=Value(False),
-                    output_field=BooleanField(),
-                )
-            )
+            # NOTE: `parent_is_epic` is annotated centrally in
+            # `issue_queryset_grouper` (called below) for all issue endpoints.
             .distinct()
         )
 
@@ -262,15 +257,12 @@ class IssueViewSet(BaseViewSet):
                     .values("count")
                 )
             )
-            .annotate(
-                # IW: flag indicating whether this issue's parent is an epic
-                parent_is_epic=Case(
-                    When(parent__type__is_epic=True, then=Value(True)),
-                    default=Value(False),
-                    output_field=BooleanField(),
-                )
-            )
         )
+
+        # `parent_is_epic` via shared helper. The grouper annotates it too, but
+        # the retrieve path uses apply_annotations without the grouper, so it
+        # must be added here as well.
+        issues = annotate_parent_is_epic(issues)
 
         return issues
 
