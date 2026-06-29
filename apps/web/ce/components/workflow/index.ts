@@ -4,8 +4,10 @@
  * See the LICENSE file for details.
  */
 
+export * from "./pending-approval-panel";
 export * from "./state-option";
 export * from "./use-workflow-drag-n-drop";
+export * from "./workflow-blocker-modal";
 export * from "./workflow-disabled-message";
 export * from "./workflow-group-tree";
 export * from "./workflow-disabled-overlay";

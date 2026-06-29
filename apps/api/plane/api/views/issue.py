@@ -155,6 +155,7 @@ from plane.utils.openapi import (
     WORKSPACE_NOT_FOUND_RESPONSE,
 )
 from plane.bgtasks.work_item_link_task import crawl_work_item_link_title
+from plane.workflow.enforcement import enforce_creation, enforce_transition
 
 
 def user_has_issue_permission(user_id, project_id, issue=None, allowed_roles=None, allow_creator=True):
@@ -463,6 +464,14 @@ class IssueListCreateAPIEndpoint(BaseAPIView):
                     status=status.HTTP_409_CONFLICT,
                 )
 
+            # If the client did not supply a state, resolve the project's
+            # default state so enforcement can block creation there too.
+            state_id = request.data.get("state")
+            if state_id is None:
+                from plane.db.models import State
+                default_state = State.objects.filter(project_id=project_id, default=True).first()
+                state_id = default_state.id if default_state else None
+            enforce_creation(project_id, state_id, request.user)
             serializer.save()
             # Refetch the issue
             issue = Issue.objects.filter(workspace__slug=slug, project_id=project_id, pk=serializer.data["id"]).first()
@@ -772,6 +781,8 @@ class IssueDetailAPIEndpoint(BaseAPIView):
                     status=status.HTTP_409_CONFLICT,
                 )
 
+            if (new_state := request.data.get("state")) is not None:
+                enforce_transition(project_id, issue.state_id, new_state, request.user)
             serializer.save()
             issue_activity.delay(
                 type="issue.activity.updated",

@@ -72,6 +72,8 @@ import { WorkspaceWikiPageStore } from "./wiki";
 import type { IPageFolderStore } from "./wiki/iw-page-folder.store";
 import { PageFolderStore } from "./wiki/iw-page-folder.store";
 import type { IWorkspaceRootStore } from "./workspace";
+import type { IWorkflowStore } from "./workflow.store";
+import { WorkflowStore } from "./workflow.store";
 
 enableStaticRendering(typeof window === "undefined");
 
@@ -107,6 +109,7 @@ export class CoreRootStore {
   workspaceWikiPages: IWorkspaceWikiPageStore;
   pageFolders: IPageFolderStore;
   powerK: IPowerKStore;
+  workflow: IWorkflowStore;
 
   constructor() {
     this.router = new RouterStore();
@@ -140,6 +143,7 @@ export class CoreRootStore {
     this.workspaceWikiPages = new WorkspaceWikiPageStore(this as unknown as RootStore);
     this.pageFolders = new PageFolderStore();
     this.powerK = new PowerKStore();
+    this.workflow = new WorkflowStore(this as unknown as RootStore);
   }
 
   resetOnSignOut() {
@@ -175,5 +179,6 @@ export class CoreRootStore {
     this.workspaceWikiPages = new WorkspaceWikiPageStore(this as unknown as RootStore);
     this.pageFolders = new PageFolderStore();
     this.powerK = new PowerKStore();
+    this.workflow = new WorkflowStore(this as unknown as RootStore);
   }
 }

@@ -94,3 +94,13 @@ from .description import Description, DescriptionVersion
 from .iw_page_folder import PageFolder
 
 from .iw_agent_doc import AgentDoc
+
+from .workflow import (
+    ProjectWorkflow,
+    WorkflowStateConfig,
+    WorkflowTransition,
+    WorkflowStateGuardian,
+    WorkflowProjectApprover,
+    ApprovalRequest,
+    WorkflowActivity,
+)

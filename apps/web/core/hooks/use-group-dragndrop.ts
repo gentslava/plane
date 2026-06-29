@@ -12,6 +12,7 @@ import { handleGroupDragDrop } from "@/components/issues/issue-layouts/utils";
 import { ISSUE_FILTER_DEFAULT_DATA } from "@/store/issue/helpers/base-issues.store";
 import { useIssueDetail } from "./store/use-issue-detail";
 import { useIssues } from "./store/use-issues";
+import { useWorkflow } from "./store/use-workflow";
 import { useIssuesActions } from "./use-issues-actions";
 
 type DNDStoreType =
@@ -39,6 +40,7 @@ export const useGroupIssuesDragNDrop = (
     issue: { getIssueById },
   } = useIssueDetail();
   const { updateIssue } = useIssuesActions(storeType);
+  const { tryOpenBlockerFromError } = useWorkflow();
   const {
     issues: { getIssueIds, addCycleToIssue, removeCycleFromIssue, changeModulesInIssue },
   } = useIssues(storeType);
@@ -94,7 +96,21 @@ export const useGroupIssuesDragNDrop = (
       delete data[moduleKey];
     }
 
-    updateIssue && updateIssue(projectId, issueId, data).catch(() => setToast(errorToastProps));
+    if (updateIssue) {
+      updateIssue(projectId, issueId, data).catch((error) => {
+        // A blocked state transition (e.g. dropping into a column the workflow
+        // forbids) gets the explanatory dialog instead of a cryptic error toast.
+        if (
+          !tryOpenBlockerFromError(error, {
+            workspaceSlug: workspaceSlug?.toString() ?? "",
+            projectId,
+            issueId,
+            toState: (data.state_id as string) ?? "",
+          })
+        )
+          setToast(errorToastProps);
+      });
+    }
   };
 
   const handleOnDrop = async (source: GroupDropLocation, destination: GroupDropLocation) => {

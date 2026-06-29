@@ -157,6 +157,24 @@ type Query {
   collectionMembers(slug: String!, collection: String!): [CollectionMemberType!]!
   wikiFavorites(slug: String!, limit: Int = null): [WikiFavoriteType!]!
   tours: TourType!
+  workflowApprovalRequests(slug: String!, project: String!, workItem: String = null, status: String = "PENDING"): [WorkflowApprovalRequestType!]!
+}
+
+type WorkflowApprovalRequestType {
+  id: ID!
+  workspace: ID!
+  project: ID!
+  workItem: ID!
+  fromState: ID!
+  toState: ID!
+  requestedBy: ID!
+  comment: String
+  status: String!
+  decidedBy: ID
+  decidedAt: DateTime
+  decisionReason: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type InstanceType {
@@ -2178,6 +2196,10 @@ type Mutation {
   updateCollectionMember(slug: String!, collection: String!, collectionMember: String!, input: CollectionMemberUpdateInput!): CollectionMemberType!
   removeCollectionMember(slug: String!, collection: String!, collectionMember: String!): Boolean!
   completeTour(input: TourTypeInput!): TourType!
+  requestWorkflowApproval(slug: String!, project: String!, workItem: String!, toState: String!, comment: String = null): WorkflowApprovalRequestType!
+  approveWorkflowRequest(slug: String!, project: String!, request: String!, reason: String = null): WorkflowApprovalRequestType!
+  rejectWorkflowRequest(slug: String!, project: String!, request: String!, reason: String = null): WorkflowApprovalRequestType!
+  cancelWorkflowRequest(slug: String!, project: String!, request: String!): WorkflowApprovalRequestType!
 }
 
 type AssetPresignedUrlResponseType {

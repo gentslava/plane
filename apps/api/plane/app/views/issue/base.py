@@ -77,6 +77,7 @@ from plane.utils.issue_filters import issue_filters
 from plane.utils.order_queryset import order_issue_queryset
 from plane.utils.paginator import GroupedOffsetPaginator, SubGroupedOffsetPaginator
 from plane.utils.timezone_converter import user_timezone_converter
+from plane.workflow.enforcement import enforce_creation, enforce_transition
 
 from .. import BaseAPIView, BaseViewSet
 
@@ -420,6 +421,17 @@ class IssueViewSet(BaseViewSet):
         )
 
         if serializer.is_valid():
+            # state_id read from request.data, not validated_data: the serializer
+            # exposes it as PrimaryKeyRelatedField(source="state"), so validated_data
+            # holds the resolved State under "state", not the raw id.
+            # If the client did not supply a state_id, resolve the project's
+            # default state so enforcement can block creation there too.
+            state_id = request.data.get("state_id")
+            if state_id is None:
+                from plane.db.models import State
+                default_state = State.objects.filter(project_id=project_id, default=True).first()
+                state_id = default_state.id if default_state else None
+            enforce_creation(project_id, state_id, request.user)
             serializer.save()
 
             # Track the issue
@@ -687,6 +699,8 @@ class IssueViewSet(BaseViewSet):
         requested_data = json.dumps(self.request.data, cls=DjangoJSONEncoder)
         serializer = IssueCreateSerializer(issue, data=request.data, partial=True, context={"project_id": project_id})
         if serializer.is_valid():
+            if (new_state_id := request.data.get("state_id")) is not None:
+                enforce_transition(project_id, issue.state_id, new_state_id, request.user)
             serializer.save()
             # Check if the update is a migration description update
             is_migration_description_update = skip_activity and is_description_update

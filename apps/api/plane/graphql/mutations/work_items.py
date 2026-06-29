@@ -25,6 +25,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.utils import timezone
 
 from plane.bgtasks.issue_activities_task import issue_activity
+from plane.graphql.workflow import guard_creation, guard_transition_or_request
 
 from plane.db.models import (
     CommentReaction,
@@ -199,6 +200,13 @@ def resolve_create_issue_v2(_, info, slug, project, issueInput):
     if parent_id:
         parent = Issue.objects.filter(project=p, id=parent_id).first()
 
+    # Workflow guard: check creation is allowed in the requested (or default) state.
+    guard_state_id = state_id
+    if guard_state_id is None:
+        default_state = State.objects.filter(project=p, default=True).first()
+        guard_state_id = default_state.id if default_state else None
+    guard_creation(p.id, guard_state_id, user)
+
     issue = Issue(
         name=data.get("name") or "",
         project=p,
@@ -289,6 +297,8 @@ def resolve_update_issue_v2(_, info, slug, project, id, issueInput=None):
     if "state" in data and data.get("state"):
         new_state = State.objects.filter(project=p, id=data["state"]).first()
         if new_state is not None:
+            # Workflow guard: check transition from current state to new state.
+            guard_transition_or_request(p.id, issue.state_id, new_state.id, user, issue)
             issue.state = new_state
             update_fields.append("state")
     if "parent" in data:

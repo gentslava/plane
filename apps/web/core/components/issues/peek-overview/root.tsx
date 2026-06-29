@@ -19,8 +19,11 @@ import { EIssueServiceType, EIssuesStoreType } from "@plane/types";
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 import { useIssues } from "@/hooks/store/use-issues";
 import { useUserPermissions } from "@/hooks/store/user";
+import { useWorkflow } from "@/hooks/store/use-workflow";
 import { useIssueStoreType } from "@/hooks/use-issue-layout-store";
 import { useWorkItemProperties } from "@/plane-web/hooks/use-issue-properties";
+// workflow
+import { WorkflowBlockerModal } from "@/plane-web/components/workflow";
 // local imports
 import type { TIssueOperations } from "../issue-detail";
 import { IssueView } from "./view";
@@ -75,6 +78,9 @@ export const IssuePeekOverview = observer(function IssuePeekOverview(props: IWor
     peekIssue?.issueId,
     isPeekEpic ? EIssueServiceType.EPICS : EIssueServiceType.ISSUES
   );
+  // workflow blocked-transition dialog — routed through the shared store; the
+  // dialog is rendered below (always, regardless of whether a work item is peeked)
+  const { tryOpenBlockerFromError } = useWorkflow();
   // state
   const [error, setError] = useState(false);
 
@@ -104,12 +110,21 @@ export const IssuePeekOverview = observer(function IssuePeekOverview(props: IWor
               fetchActivities(workspaceSlug, projectId, issueId);
               return;
             })
-            .catch((_error) => {
-              setToast({
-                title: t("toast.error"),
-                type: TOAST_TYPE.ERROR,
-                message: t("entity.update.failed", { entity: t("issue.label", { count: 1 }) }),
-              });
+            .catch((updateError: unknown) => {
+              if (
+                !tryOpenBlockerFromError(updateError, {
+                  workspaceSlug,
+                  projectId,
+                  issueId,
+                  toState: (data.state_id as string) ?? "",
+                })
+              ) {
+                setToast({
+                  title: t("toast.error"),
+                  type: TOAST_TYPE.ERROR,
+                  message: t("entity.update.failed", { entity: t("issue.label", { count: 1 }) }),
+                });
+              }
             });
         }
       },
@@ -233,7 +248,7 @@ export const IssuePeekOverview = observer(function IssuePeekOverview(props: IWor
       },
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [fetchIssue, is_draft, issues, fetchActivities, pathname, removeRoutePeekId, restoreIssue]
+    [fetchIssue, is_draft, issues, fetchActivities, pathname, removeRoutePeekId, restoreIssue, tryOpenBlockerFromError]
   );
 
   const { isLoading } = useSWR(
@@ -246,8 +261,6 @@ export const IssuePeekOverview = observer(function IssuePeekOverview(props: IWor
     }
   );
 
-  if (!peekIssue?.workspaceSlug || !peekIssue?.projectId || !peekIssue?.issueId) return <></>;
-
   // Check if issue is editable, based on user role
   const isEditable = allowPermissions(
     [EUserPermissions.ADMIN, EUserPermissions.MEMBER],
@@ -257,17 +270,27 @@ export const IssuePeekOverview = observer(function IssuePeekOverview(props: IWor
   );
 
   return (
-    <IssueView
-      workspaceSlug={peekIssue.workspaceSlug}
-      projectId={peekIssue.projectId}
-      issueId={peekIssue.issueId}
-      isLoading={isLoading}
-      isError={error}
-      is_archived={!!peekIssue.isArchived}
-      disabled={!isEditable}
-      embedIssue={embedIssue}
-      embedRemoveCurrentNotification={embedRemoveCurrentNotification}
-      issueOperations={issueOperations}
-    />
+    <>
+      {peekIssue?.workspaceSlug && peekIssue?.projectId && peekIssue?.issueId && (
+        <IssueView
+          workspaceSlug={peekIssue.workspaceSlug}
+          projectId={peekIssue.projectId}
+          issueId={peekIssue.issueId}
+          isLoading={isLoading}
+          isError={error}
+          is_archived={!!peekIssue.isArchived}
+          disabled={!isEditable}
+          embedIssue={embedIssue}
+          embedRemoveCurrentNotification={embedRemoveCurrentNotification}
+          issueOperations={issueOperations}
+        />
+      )}
+      {/* Workflow blocker dialog — store-driven, mounted regardless of whether a
+          work item is peeked. IssuePeekOverview is rendered by every issue layout
+          (and the full issue page), so board drag-n-drop blocks have a host to
+          render the dialog even when no peek is open. The peek detector gates on
+          its open-state. */}
+      <WorkflowBlockerModal />
+    </>
   );
 });

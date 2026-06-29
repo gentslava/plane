@@ -14,6 +14,7 @@ import { EIssueServiceType, EIssuesStoreType } from "@plane/types";
 import { cn } from "@plane/utils";
 // hooks
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
+import { useWorkflow } from "@/hooks/store/use-workflow";
 import { IssuesStoreContext } from "@/hooks/use-issue-layout-store";
 import useKeypress from "@/hooks/use-keypress";
 import usePeekOverviewOutsideClickDetector from "@/hooks/use-peek-overview-outside-click";
@@ -67,6 +68,9 @@ export const IssueView = observer(function IssueView(props: IIssueView) {
   // store hooks — call both unconditionally (React hooks rule), pick based on the peeked issue
   const issueStore = useIssueDetail(EIssueServiceType.ISSUES);
   const epicStore = useIssueDetail(EIssueServiceType.EPICS);
+  // workflow blocker dialog open-state — gate outside-click/Escape so closing the
+  // dialog backdrop doesn't also close the peeked work item underneath it
+  const workflow = useWorkflow();
   // Determine if the peeked issue is an epic from the shared issues map.
   // Prefer explicit is_epic; fall back to which store originated the peek.
   const peekIssueData = issueStore.issue.getIssueById(issueId);
@@ -100,7 +104,13 @@ export const IssueView = observer(function IssueView(props: IIssueView) {
     () => {
       const isAnyDropbarOpen = editorRef.current?.isAnyDropbarOpen();
       if (!embedIssue) {
-        if (!isAnyModalOpen && !epicStore.isAnyModalOpen && !isAnyLocalModalOpen && !isAnyDropbarOpen) {
+        if (
+          !isAnyModalOpen &&
+          !epicStore.isAnyModalOpen &&
+          !isAnyLocalModalOpen &&
+          !isAnyDropbarOpen &&
+          !workflow.blocker.open
+        ) {
           removeRoutePeekId();
         }
       }
@@ -113,7 +123,13 @@ export const IssueView = observer(function IssueView(props: IIssueView) {
     const editorImageFullScreenModalElement = document.querySelector(".editor-image-full-screen-modal");
     const dropdownElement = document.activeElement?.tagName === "INPUT";
     const isAnyDropbarOpen = editorRef.current?.isAnyDropbarOpen();
-    if (!isAnyModalOpen && !dropdownElement && !isAnyDropbarOpen && !editorImageFullScreenModalElement) {
+    if (
+      !isAnyModalOpen &&
+      !dropdownElement &&
+      !isAnyDropbarOpen &&
+      !editorImageFullScreenModalElement &&
+      !workflow.blocker.open
+    ) {
       removeRoutePeekId();
       const issueElement = document.getElementById(`issue-${issueId}`);
       if (issueElement) issueElement?.focus();

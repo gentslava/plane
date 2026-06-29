@@ -184,6 +184,9 @@ class IntakeIssueListCreateAPIEndpoint(BaseAPIView):
                 default=False,
             )
 
+        # Workflow guard intentionally skipped: intake creates into the triage
+        # state as a service flow (see workflow spec §6).
+
         # create an issue
         issue_data = request.data.get("issue", {})
         # Accept both "description" and "description_json" keys for the description_json field

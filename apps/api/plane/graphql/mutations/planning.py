@@ -11,6 +11,8 @@
 # app keeps working. See the final report for details.
 from ariadne import MutationType, ObjectType
 
+from plane.graphql.workflow import guard_creation, guard_transition_or_request
+
 from plane.db.models import (
     CommentReaction,
     Issue,
@@ -24,6 +26,7 @@ from plane.db.models import (
     Workspace,
 )
 from plane.graphql.context import get_user
+from plane.graphql.resolvers import _member_project
 
 mutation = MutationType()
 
@@ -266,6 +269,13 @@ def resolve_create_epic(_, info, slug, project, epicInput):
     if state_id:
         state = State.objects.filter(project_id=project, id=state_id).first()
 
+    # Workflow guard: check creation is allowed in the requested (or default) state.
+    guard_state_id = state_id
+    if guard_state_id is None:
+        default_state = State.objects.filter(project_id=project, default=True).first()
+        guard_state_id = default_state.id if default_state else None
+    guard_creation(project, guard_state_id, user)
+
     epic = Issue.objects.create(
         workspace=workspace,
         project_id=project,
@@ -286,6 +296,13 @@ def resolve_create_epic(_, info, slug, project, epicInput):
 @mutation.field("updateEpic")
 def resolve_update_epic(_, info, slug, project, epic, epicInput=None):
     user = get_user(info)
+    # Mirror updateIssueV2: a null actor cannot own the auto-filed ApprovalRequest
+    # that an off-path move now creates (Phase 3 B), and the write must be gated on
+    # verified workspace membership rather than the looser _epic_qs slug/project scope.
+    if user is None:
+        return None
+    if _member_project(info, slug, project) is None:
+        return None
     epic_obj = _epic_qs(slug, project).filter(id=epic).first()
     if epic_obj is None:
         return None
@@ -307,6 +324,8 @@ def resolve_update_epic(_, info, slug, project, epic, epicInput=None):
             project_id=project, id=epicInput["state"]
         ).first()
         if state is not None:
+            # Workflow guard: check transition from current state to new state.
+            guard_transition_or_request(project, epic_obj.state_id, state.id, user, epic_obj)
             epic_obj.state = state
     if user is not None:
         epic_obj.updated_by = user

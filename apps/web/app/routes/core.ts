@@ -379,6 +379,11 @@ export const coreRoutes: RouteConfigEntry[] = [
                 "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/automations/page.tsx"
               ),
             ]),
+            // Project Workflows (approval settings)
+            route(
+              ":workspaceSlug/settings/projects/:projectId/workflows",
+              "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/workflows/page.tsx"
+            ),
           ]),
         ]),
       ]),

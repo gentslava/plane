@@ -136,3 +136,10 @@ from .draft import (
 )
 
 from .iw_page_folder import PageFolderSerializer
+
+from .workflow import (
+    ProjectWorkflowSerializer,
+    WorkflowStateConfigSerializer,
+    WorkflowTransitionSerializer,
+    WorkflowActivitySerializer,
+)

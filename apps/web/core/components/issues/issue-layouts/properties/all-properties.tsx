@@ -14,6 +14,7 @@ import { Paperclip } from "lucide-react";
 // i18n
 import { useTranslation } from "@plane/i18n";
 import { LinkIcon, StartDatePropertyIcon, ViewsIcon, DueDatePropertyIcon } from "@plane/propel/icons";
+import { setToast, TOAST_TYPE } from "@plane/propel/toast";
 import { Tooltip } from "@plane/propel/tooltip";
 import type { TIssue, IIssueDisplayProperties, TIssuePriorities } from "@plane/types";
 // ui
@@ -39,6 +40,7 @@ import { useIssues } from "@/hooks/store/use-issues";
 import { useLabel } from "@/hooks/store/use-label";
 import { useProject } from "@/hooks/store/use-project";
 import { useProjectState } from "@/hooks/store/use-project-state";
+import { useWorkflow } from "@/hooks/store/use-workflow";
 import { useAppRouter } from "@/hooks/use-app-router";
 import { useIssueStoreType } from "@/hooks/use-issue-layout-store";
 import { usePlatformOS } from "@/hooks/use-platform-os";
@@ -74,6 +76,7 @@ export const IssueProperties = observer(function IssueProperties(props: IIssuePr
   } = useIssues(storeType);
   const { areEstimateEnabledByProjectId } = useProjectEstimates();
   const { getStateById } = useProjectState();
+  const { tryOpenBlockerFromError } = useWorkflow();
   const { isMobile } = usePlatformOS();
   const projectDetails = getProjectById(issue.project_id);
 
@@ -108,7 +111,26 @@ export const IssueProperties = observer(function IssueProperties(props: IIssuePr
   );
 
   const handleState = async (stateId: string) => {
-    if (updateIssue) await updateIssue(issue.project_id, issue.id, { state_id: stateId });
+    if (!updateIssue) return;
+    try {
+      await updateIssue(issue.project_id, issue.id, { state_id: stateId });
+    } catch (error) {
+      // Inline state change on a card (list/kanban/spreadsheet) — surface the
+      // workflow approval dialog on a blocked transition, like the detail/peek/drag paths.
+      const handled = tryOpenBlockerFromError(error, {
+        workspaceSlug: workspaceSlug?.toString() ?? "",
+        projectId: issue.project_id ?? "",
+        issueId: issue.id,
+        toState: stateId,
+      });
+      if (!handled) {
+        setToast({
+          type: TOAST_TYPE.ERROR,
+          title: t("toast.error"),
+          message: t("entity.update.failed", { entity: t("issue.label", { count: 1 }) }),
+        });
+      }
+    }
   };
 
   const handlePriority = async (value: TIssuePriorities) => {

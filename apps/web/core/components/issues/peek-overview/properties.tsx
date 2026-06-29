@@ -43,6 +43,7 @@ import { IssueParentSelectRoot } from "@/plane-web/components/issues/issue-detai
 import { DateAlert } from "@/plane-web/components/issues/issue-details/sidebar/date-alert";
 import { TransferHopInfo } from "@/plane-web/components/issues/issue-details/sidebar/transfer-hop-info";
 import { IssueWorklogProperty } from "@/plane-web/components/issues/worklog/property";
+import { PendingApprovalPanel } from "@/plane-web/components/workflow";
 import type { TIssueOperations } from "../issue-detail";
 import { IssueCycleSelect } from "../issue-detail/cycle-select";
 import { IssueLabel } from "../issue-detail/label";
@@ -100,6 +101,8 @@ export const PeekOverviewProperties = observer(function PeekOverviewProperties(p
             dropdownArrowClassName="h-3.5 w-3.5 hidden group-hover:inline"
           />
         </SidebarPropertyListItem>
+
+        <PendingApprovalPanel workspaceSlug={workspaceSlug} projectId={projectId} issueId={issueId} />
 
         <SidebarPropertyListItem icon={MembersPropertyIcon} label={t("common.assignees")}>
           <MemberDropdown

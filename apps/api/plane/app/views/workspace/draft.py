@@ -22,6 +22,7 @@ from rest_framework.response import Response
 
 # Module imports
 from plane.app.permissions import allow_permission, ROLE
+from plane.workflow.enforcement import enforce_creation
 from plane.app.serializers import (
     IssueCreateSerializer,
     DraftIssueCreateSerializer,
@@ -34,6 +35,7 @@ from plane.db.models import (
     CycleIssue,
     ModuleIssue,
     DraftIssueCycle,
+    State,
     Workspace,
     FileAsset,
 )
@@ -222,6 +224,18 @@ class WorkspaceDraftIssueViewSet(BaseViewSet):
         )
 
         if serializer.is_valid():
+            state_obj = serializer.validated_data.get("state")
+            state_id_for_guard = state_obj.id if state_obj else None
+            if state_id_for_guard is None:
+                default_state = State.objects.filter(
+                    project_id=draft_issue.project_id, default=True
+                ).first()
+                state_id_for_guard = default_state.id if default_state else None
+            enforce_creation(
+                draft_issue.project_id,
+                state_id_for_guard,
+                request.user,
+            )
             serializer.save()
 
             issue_activity.delay(

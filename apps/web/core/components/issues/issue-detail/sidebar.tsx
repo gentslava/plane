@@ -21,6 +21,7 @@ import {
   EstimatePropertyIcon,
   ParentPropertyIcon,
 } from "@plane/propel/icons";
+import { TOAST_TYPE, setToast } from "@plane/propel/toast";
 import { cn, getDate, renderFormattedPayloadDate, shouldHighlightIssueDueDate } from "@plane/utils";
 // components
 import { DateDropdown } from "@/components/dropdowns/date";
@@ -33,10 +34,11 @@ import { StateDropdown } from "@/components/dropdowns/state/dropdown";
 import { useProjectEstimates } from "@/hooks/store/estimates";
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 import { useMember } from "@/hooks/store/use-member";
+import { useWorkflow } from "@/hooks/store/use-workflow";
 import { useProject } from "@/hooks/store/use-project";
 import { useProjectState } from "@/hooks/store/use-project-state";
-// plane web components
 // components
+import { PendingApprovalPanel } from "@/plane-web/components/workflow";
 import { WorkItemAdditionalSidebarProperties } from "@/plane-web/components/issues/issue-details/additional-properties";
 import { IssueParentSelectRoot } from "@/plane-web/components/issues/issue-details/parent-select-root";
 import { DateAlert } from "@/plane-web/components/issues/issue-details/sidebar/date-alert";
@@ -60,10 +62,12 @@ export const IssueDetailsSidebar = observer(function IssueDetailsSidebar(props: 
   const { t } = useTranslation();
   const { workspaceSlug, projectId, issueId, issueOperations, isEditable } = props;
   // store hooks
+  const { tryOpenBlockerFromError } = useWorkflow();
   const { getProjectById } = useProject();
   const { areEstimateEnabledByProjectId } = useProjectEstimates();
   const {
     issue: { getIssueById },
+    updateIssue,
   } = useIssueDetail();
   const { getUserDetails } = useMember();
   const { getStateById } = useProjectState();
@@ -82,6 +86,23 @@ export const IssueDetailsSidebar = observer(function IssueDetailsSidebar(props: 
   const maxDate = issue.target_date ? getDate(issue.target_date) : null;
   maxDate?.setDate(maxDate.getDate());
 
+  // Handle state change with workflow blocker detection.
+  // Uses the store's updateIssue directly so errors are not silently swallowed
+  // before we can inspect them for WORKFLOW_TRANSITION_BLOCKED.
+  const handleStateChange = async (val: string) => {
+    try {
+      await updateIssue(workspaceSlug, projectId, issueId, { state_id: val });
+    } catch (error) {
+      if (!tryOpenBlockerFromError(error, { workspaceSlug, projectId, issueId, toState: val })) {
+        setToast({
+          type: TOAST_TYPE.ERROR,
+          title: t("toast.error"),
+          message: t("entity.update.failed", { entity: t("issue.label", { count: 1 }) }),
+        });
+      }
+    }
+  };
+
   return (
     <>
       <div className="flex h-full w-full flex-col items-center divide-y-2 divide-subtle-1 overflow-hidden">
@@ -91,7 +112,7 @@ export const IssueDetailsSidebar = observer(function IssueDetailsSidebar(props: 
             <SidebarPropertyListItem icon={StatePropertyIcon} label={t("common.state")}>
               <StateDropdown
                 value={issue?.state_id}
-                onChange={(val) => issueOperations.update(workspaceSlug, projectId, issueId, { state_id: val })}
+                onChange={handleStateChange}
                 projectId={projectId?.toString() ?? ""}
                 disabled={!isEditable || !!issue.is_epic}
                 buttonVariant="transparent-with-text"
@@ -102,6 +123,8 @@ export const IssueDetailsSidebar = observer(function IssueDetailsSidebar(props: 
                 dropdownArrowClassName="h-3.5 w-3.5 hidden group-hover:inline"
               />
             </SidebarPropertyListItem>
+
+            <PendingApprovalPanel workspaceSlug={workspaceSlug} projectId={projectId} issueId={issueId} />
 
             <SidebarPropertyListItem icon={MembersPropertyIcon} label={t("common.assignees")}>
               <MemberDropdown

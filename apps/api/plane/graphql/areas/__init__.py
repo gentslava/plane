@@ -17,6 +17,7 @@ from .invites_misc import BINDABLES as _invites_misc
 from .issue_extras import BINDABLES as _issue_extras
 from .pages_project import BINDABLES as _pages_project
 from .pages_workspace import BINDABLES as _pages_workspace
+from .workflow_approval import BINDABLES as _workflow_approval
 
 BINDABLES = [
     *_epics,
@@ -29,4 +30,5 @@ BINDABLES = [
     *_cycles_modules,
     *_issue_extras,
     *_invites_misc,
+    *_workflow_approval,
 ]
