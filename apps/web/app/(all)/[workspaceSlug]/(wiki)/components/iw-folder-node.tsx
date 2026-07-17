@@ -14,7 +14,7 @@ import { AlertModalCore } from "@plane/ui";
 import { cn } from "@plane/utils";
 // hooks
 import { usePageFolders } from "@/hooks/store/use-page-folders";
-import { EPageStoreType, usePageStore } from "@/plane-web/hooks/store";
+import { EPageStoreType, usePageStore } from "@/hooks/store";
 import { useAppRouter } from "@/hooks/use-app-router";
 // local components
 import { FolderContextMenu } from "./iw-folder-context-menu";
@@ -100,7 +100,7 @@ export const FolderNode = observer(function FolderNode(props: Props) {
   // Pages in this folder, sorted alphabetically
   const pagesInFolder = allPagesList
     .filter((p) => p.id && pageIdsInFolder.includes(p.id))
-    .toSorted((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
+    .sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
 
   if (!folder) return null;
 

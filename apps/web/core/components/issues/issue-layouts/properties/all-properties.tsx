@@ -44,8 +44,6 @@ import { useWorkflow } from "@/hooks/store/use-workflow";
 import { useAppRouter } from "@/hooks/use-app-router";
 import { useIssueStoreType } from "@/hooks/use-issue-layout-store";
 import { usePlatformOS } from "@/hooks/use-platform-os";
-// plane web components
-import { WorkItemLayoutAdditionalProperties } from "@/plane-web/components/issues/issue-layouts/additional-properties";
 // local components
 import { IssuePropertyLabels } from "./labels";
 import { WithDisplayPropertiesHOC } from "./with-display-properties-HOC";
@@ -208,6 +206,7 @@ export const IssueProperties = observer(function IssueProperties(props: IIssuePr
   const minDate = getDate(issue.start_date);
   const maxDate = getDate(issue.target_date);
 
+  // oxlint-disable-next-line unicorn/consistent-function-scoping
   const handleEventPropagation = (e: SyntheticEvent<HTMLDivElement>) => {
     e.stopPropagation();
     e.preventDefault();
@@ -218,6 +217,7 @@ export const IssueProperties = observer(function IssueProperties(props: IIssuePr
       {/* basic properties */}
       {/* state */}
       <WithDisplayPropertiesHOC displayProperties={displayProperties} displayPropertyKey="state">
+        {/* oxlint-disable-next-line jsx_a11y/click-events-have-key-events oxlint-disable-next-line jsx_a11y/no-static-element-interactions */}
         <div className="h-5" onFocus={handleEventPropagation} onClick={handleEventPropagation}>
           <StateDropdown
             buttonContainerClassName="truncate max-w-40"
@@ -234,6 +234,7 @@ export const IssueProperties = observer(function IssueProperties(props: IIssuePr
 
       {/* priority */}
       <WithDisplayPropertiesHOC displayProperties={displayProperties} displayPropertyKey="priority">
+        {/* oxlint-disable-next-line jsx_a11y/click-events-have-key-events oxlint-disable-next-line jsx_a11y/no-static-element-interactions */}
         <div className="h-5" onFocus={handleEventPropagation} onClick={handleEventPropagation}>
           <PriorityDropdown
             value={issue?.priority}
@@ -252,6 +253,7 @@ export const IssueProperties = observer(function IssueProperties(props: IIssuePr
         displayPropertyKey={["start_date", "due_date"]}
         shouldRenderProperty={() => isDateRangeEnabled}
       >
+        {/* oxlint-disable-next-line jsx_a11y/click-events-have-key-events oxlint-disable-next-line jsx_a11y/no-static-element-interactions */}
         <div className="h-5" onFocus={handleEventPropagation} onClick={handleEventPropagation}>
           <DateRangeDropdown
             value={{
@@ -287,6 +289,7 @@ export const IssueProperties = observer(function IssueProperties(props: IIssuePr
         displayPropertyKey="start_date"
         shouldRenderProperty={() => !isDateRangeEnabled}
       >
+        {/* oxlint-disable-next-line jsx_a11y/click-events-have-key-events oxlint-disable-next-line jsx_a11y/no-static-element-interactions */}
         <div className="h-5" onFocus={handleEventPropagation} onClick={handleEventPropagation}>
           <DateDropdown
             value={issue.start_date ?? null}
@@ -310,6 +313,7 @@ export const IssueProperties = observer(function IssueProperties(props: IIssuePr
         displayPropertyKey="due_date"
         shouldRenderProperty={() => !isDateRangeEnabled}
       >
+        {/* oxlint-disable-next-line jsx_a11y/click-events-have-key-events oxlint-disable-next-line jsx_a11y/no-static-element-interactions */}
         <div className="h-5" onFocus={handleEventPropagation} onClick={handleEventPropagation}>
           <DateDropdown
             value={issue?.target_date ?? null}
@@ -333,6 +337,7 @@ export const IssueProperties = observer(function IssueProperties(props: IIssuePr
 
       {/* assignee */}
       <WithDisplayPropertiesHOC displayProperties={displayProperties} displayPropertyKey="assignee">
+        {/* oxlint-disable-next-line jsx_a11y/click-events-have-key-events oxlint-disable-next-line jsx_a11y/no-static-element-interactions */}
         <div className="h-5" onFocus={handleEventPropagation} onClick={handleEventPropagation}>
           <MemberDropdown
             projectId={issue?.project_id}
@@ -357,6 +362,7 @@ export const IssueProperties = observer(function IssueProperties(props: IIssuePr
             {/* modules */}
             {projectDetails?.module_view && (
               <WithDisplayPropertiesHOC displayProperties={displayProperties} displayPropertyKey="modules">
+                {/* oxlint-disable-next-line jsx_a11y/click-events-have-key-events oxlint-disable-next-line jsx_a11y/no-static-element-interactions */}
                 <div className="h-5" onFocus={handleEventPropagation} onClick={handleEventPropagation}>
                   <ModuleDropdown
                     buttonContainerClassName="truncate max-w-40"
@@ -377,6 +383,7 @@ export const IssueProperties = observer(function IssueProperties(props: IIssuePr
             {/* cycles */}
             {projectDetails?.cycle_view && (
               <WithDisplayPropertiesHOC displayProperties={displayProperties} displayPropertyKey="cycle">
+                {/* oxlint-disable-next-line jsx_a11y/click-events-have-key-events oxlint-disable-next-line jsx_a11y/no-static-element-interactions */}
                 <div className="h-5" onFocus={handleEventPropagation} onClick={handleEventPropagation}>
                   <CycleDropdown
                     buttonContainerClassName="truncate max-w-40"
@@ -398,6 +405,7 @@ export const IssueProperties = observer(function IssueProperties(props: IIssuePr
       {/* estimates */}
       {projectId && areEstimateEnabledByProjectId(projectId?.toString()) && (
         <WithDisplayPropertiesHOC displayProperties={displayProperties} displayPropertyKey="estimate">
+          {/* oxlint-disable-next-line jsx_a11y/click-events-have-key-events oxlint-disable-next-line jsx_a11y/no-static-element-interactions */}
           <div className="h-5" onFocus={handleEventPropagation} onClick={handleEventPropagation}>
             <EstimateDropdown
               value={issue.estimate_point ?? undefined}
@@ -426,6 +434,7 @@ export const IssueProperties = observer(function IssueProperties(props: IIssuePr
             isMobile={isMobile}
             renderByDefault={false}
           >
+            {/* oxlint-disable-next-line jsx_a11y/click-events-have-key-events oxlint-disable-next-line jsx_a11y/no-static-element-interactions */}
             <div
               onFocus={handleEventPropagation}
               onClick={(e) => {
@@ -459,6 +468,7 @@ export const IssueProperties = observer(function IssueProperties(props: IIssuePr
           isMobile={isMobile}
           renderByDefault={false}
         >
+          {/* oxlint-disable-next-line jsx_a11y/click-events-have-key-events oxlint-disable-next-line jsx_a11y/no-static-element-interactions */}
           <div
             className="flex h-5 flex-shrink-0 items-center justify-center gap-2 overflow-hidden rounded-sm border-[0.5px] border-strong px-2.5 py-1"
             onFocus={handleEventPropagation}
@@ -482,6 +492,7 @@ export const IssueProperties = observer(function IssueProperties(props: IIssuePr
           isMobile={isMobile}
           renderByDefault={false}
         >
+          {/* oxlint-disable-next-line jsx_a11y/click-events-have-key-events oxlint-disable-next-line jsx_a11y/no-static-element-interactions */}
           <div
             className="flex h-5 flex-shrink-0 items-center justify-center gap-2 overflow-hidden rounded-sm border-[0.5px] border-strong px-2.5 py-1"
             onFocus={handleEventPropagation}
@@ -492,9 +503,6 @@ export const IssueProperties = observer(function IssueProperties(props: IIssuePr
           </div>
         </Tooltip>
       </WithDisplayPropertiesHOC>
-
-      {/* Additional Properties */}
-      <WorkItemLayoutAdditionalProperties displayProperties={displayProperties} issue={issue} />
 
       {/* label */}
       <WithDisplayPropertiesHOC displayProperties={displayProperties} displayPropertyKey="labels">

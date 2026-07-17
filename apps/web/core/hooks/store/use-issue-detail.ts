@@ -12,7 +12,7 @@ import { StoreContext } from "@/lib/store-context";
 // hooks
 import { IssuesStoreContext } from "@/hooks/use-issue-layout-store";
 // types
-import type { IIssueDetail } from "@/plane-web/store/issue/issue-details/root.store";
+import type { IIssueDetail } from "@/store/issue/issue-details/root.store";
 
 export const useIssueDetail = (serviceType?: TIssueServiceType): IIssueDetail => {
   const context = useContext(StoreContext);

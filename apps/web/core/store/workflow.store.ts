@@ -18,7 +18,7 @@ import type {
 } from "@plane/types";
 // services
 import { WorkflowService } from "@/services/project/workflow.service";
-import type { RootStore } from "@/plane-web/store/root.store";
+import type { RootStore } from "@/store/root.store";
 
 /**
  * Transient UI state for the blocked-transition dialog. A single source of truth

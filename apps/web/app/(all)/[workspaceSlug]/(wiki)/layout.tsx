@@ -15,7 +15,7 @@ import { AppSidebarToggleButton } from "@/components/sidebar/sidebar-toggle-butt
 import { ProjectsAppPowerKProvider } from "@/components/power-k/projects-app-provider";
 // hooks
 import { useAppTheme } from "@/hooks/store/use-app-theme";
-import { EPageStoreType, usePageStore } from "@/plane-web/hooks/store";
+import { EPageStoreType, usePageStore } from "@/hooks/store";
 import { usePageFolders } from "@/hooks/store/use-page-folders";
 import { useAppRouter } from "@/hooks/use-app-router";
 // local imports

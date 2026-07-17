@@ -29,7 +29,7 @@ import { useEditorAsset } from "@/hooks/store/use-editor-asset";
 import { useWorkspace } from "@/hooks/store/use-workspace";
 import { useAppRouter } from "@/hooks/use-app-router";
 // plane web hooks
-import { EPageStoreType, usePage, usePageStore } from "@/plane-web/hooks/store";
+import { EPageStoreType, usePage, usePageStore } from "@/hooks/store";
 // services
 import { WorkspacePageService } from "@/services/page/workspace-page.service";
 import { WorkspaceService } from "@/services/workspace.service";

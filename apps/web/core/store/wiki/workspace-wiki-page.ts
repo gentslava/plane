@@ -9,7 +9,7 @@ import { computed, makeObservable } from "mobx";
 import { EPageAccess, EUserPermissions } from "@plane/constants";
 import type { TPage } from "@plane/types";
 // plane web store
-import type { RootStore } from "@/plane-web/store/root.store";
+import type { RootStore } from "@/store/root.store";
 // services
 import { WorkspacePageService } from "@/services/page/workspace-page.service";
 const workspacePageService = new WorkspacePageService();

@@ -13,7 +13,7 @@ import { useTranslation } from "@plane/i18n";
 import { EmptyStateDetailed } from "@plane/propel/empty-state";
 import { EUserProjectRoles } from "@plane/types";
 // components
-import { CreateUpdateEpicModal } from "@/plane-web/components/epics/epic-modal/modal";
+import { CreateUpdateEpicModal } from "@/components/epic-modal/modal";
 // hooks
 import { useUserPermissions } from "@/hooks/store/user";
 

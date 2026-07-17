@@ -21,7 +21,7 @@ import { AlertModalCore } from "@plane/ui";
 import { SidebarNavItem } from "@/components/sidebar/sidebar-navigation";
 import { AppSidebarToggleButton } from "@/components/sidebar/sidebar-toggle-button";
 // store hooks
-import { EPageStoreType, usePageStore } from "@/plane-web/hooks/store";
+import { EPageStoreType, usePageStore } from "@/hooks/store";
 import { usePageFolders } from "@/hooks/store/use-page-folders";
 import { useAppRouter } from "@/hooks/use-app-router";
 // local components
@@ -48,13 +48,13 @@ export const WikiSidebarContent = observer(function WikiSidebarContent() {
         const pageId = p.id ?? "";
         return pageId && !pageFolderMap[pageId];
       })
-      .toSorted((a, b) => (a.name ?? "").localeCompare(b.name ?? ""))
+      .sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""))
       .map((p) => p.id ?? "")
   );
 
   const rootPages = pagesList
     .filter((p) => p.id && rootPageIds.has(p.id))
-    .toSorted((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
+    .sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
 
   // Root folder IDs
   const rootFolderIds = folderStore.rootFolderIds;

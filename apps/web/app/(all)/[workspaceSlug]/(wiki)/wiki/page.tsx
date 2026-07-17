@@ -15,7 +15,7 @@ function WikiHomePage() {
       </div>
       <div className="flex flex-col gap-1">
         <h2 className="text-xl font-semibold text-primary">Workspace Wiki</h2>
-        <p className="max-w-md text-sm text-secondary">
+        <p className="text-sm max-w-md text-secondary">
           Your workspace knowledge base. Create and organize pages to share information with your team.
         </p>
       </div>

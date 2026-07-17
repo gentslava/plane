@@ -13,12 +13,11 @@ import { cn } from "@plane/utils";
 // hooks
 import { usePowerK } from "@/hooks/store/use-power-k";
 import useDebounce from "@/hooks/use-debounce";
-// plane web imports
-import { PowerKModalNoSearchResultsCommand } from "@/plane-web/components/command-palette/power-k/search/no-results-command";
 import { WorkspacePageService } from "@/services/page/workspace-page.service";
 import { WorkspaceService } from "@/services/workspace.service";
 // local imports
 import type { TPowerKContext, TPowerKPageType } from "../../core/types";
+import { PowerKModalNoSearchResultsCommand } from "./no-results-command";
 import { PowerKModalSearchResults } from "./search-results";
 // services init
 const workspaceService = new WorkspaceService();
@@ -61,7 +60,8 @@ export function PowerKModalSearchMenu(props: Props) {
         workspacePageService.fetchAll(slug, { search: debouncedSearchTerm }).catch(() => []),
       ])
         .then(([searchResults, wikiPages]) => {
-          // Add wiki pages as a separate section in the results
+          // Include workspace wiki pages in the common Pages result group. The
+          // shared result mapper routes pages without project_ids to /wiki/.
           const wikiPageResults = wikiPages.map((page) => ({
             id: page.id ?? "",
             name: page.name ?? "Untitled",
@@ -71,13 +71,12 @@ export function PowerKModalSearchMenu(props: Props) {
             ...searchResults,
             results: {
               ...searchResults.results,
-              wiki_page: wikiPageResults,
+              page: [...(searchResults.results.page ?? []), ...wikiPageResults],
             },
-          };
-          setResults(mergedResults as IWorkspaceSearchResults);
-          const count = Object.keys(mergedResults.results).reduce(
-            (accumulator, key) =>
-              (mergedResults.results[key as keyof typeof mergedResults.results] as unknown[])?.length + accumulator,
+          } as IWorkspaceSearchResults;
+          setResults(mergedResults);
+          const count = Object.values(mergedResults.results).reduce(
+            (accumulator, items) => accumulator + (items?.length ?? 0),
             0
           );
           setResultsCount(count);

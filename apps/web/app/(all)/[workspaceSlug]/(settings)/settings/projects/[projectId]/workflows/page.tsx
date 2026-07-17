@@ -15,8 +15,8 @@ import { SettingsHeading } from "@/components/settings/heading";
 // hooks
 import { useProject } from "@/hooks/store/use-project";
 import { useUserPermissions } from "@/hooks/store/user";
-// ce components
-import { WorkflowSettingsRoot } from "@/plane-web/components/projects/settings/workflows";
+// components
+import { WorkflowSettingsRoot } from "@/components/projects/settings/workflows";
 // local imports
 import type { Route } from "./+types/page";
 import { WorkflowsProjectSettingsHeader } from "./header";

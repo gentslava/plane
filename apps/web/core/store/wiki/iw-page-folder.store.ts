@@ -110,7 +110,7 @@ export class PageFolderStore implements IPageFolderStore {
   get rootFolderIds(): string[] {
     return Object.values(this.folders)
       .filter((f) => f.parent_folder === null)
-      .toSorted((a: TPageFolder, b: TPageFolder) => a.name.localeCompare(b.name))
+      .sort((a: TPageFolder, b: TPageFolder) => a.name.localeCompare(b.name))
       .map((f: TPageFolder) => f.id);
   }
 
@@ -125,7 +125,7 @@ export class PageFolderStore implements IPageFolderStore {
   getChildFolderIds = computedFn((parentFolderId: string | null): string[] =>
     Object.values(this.folders)
       .filter((f) => f.parent_folder === parentFolderId)
-      .toSorted((a: TPageFolder, b: TPageFolder) => a.name.localeCompare(b.name))
+      .sort((a: TPageFolder, b: TPageFolder) => a.name.localeCompare(b.name))
       .map((f: TPageFolder) => f.id)
   );
 
@@ -314,7 +314,7 @@ export class PageFolderStore implements IPageFolderStore {
       // Remove all pages that belonged to any folder in the subtree
       const nextMap = { ...this.pageFolderMap };
       for (const [pageId, mappedFolderId] of Object.entries(nextMap)) {
-        if (toDelete.has(mappedFolderId)) {
+        if (mappedFolderId && toDelete.has(mappedFolderId)) {
           deletedPageIds.push(pageId);
           delete nextMap[pageId];
         }

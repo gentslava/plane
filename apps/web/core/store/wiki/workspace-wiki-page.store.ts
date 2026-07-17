@@ -12,7 +12,7 @@ import type { TPage, TPageFilters, TPageNavigationTabs } from "@plane/types";
 // helpers
 import { filterPagesByPageType, getPageName, orderPages, shouldFilterPage } from "@plane/utils";
 // plane web store
-import type { RootStore } from "@/plane-web/store/root.store";
+import type { RootStore } from "@/store/root.store";
 // services
 import { WorkspacePageService } from "@/services/page/workspace-page.service";
 // store

@@ -21,9 +21,9 @@ import { useIssues } from "@/hooks/store/use-issues";
 import { useUserPermissions } from "@/hooks/store/user";
 import { useWorkflow } from "@/hooks/store/use-workflow";
 import { useIssueStoreType } from "@/hooks/use-issue-layout-store";
-import { useWorkItemProperties } from "@/plane-web/hooks/use-issue-properties";
+import { useWorkItemProperties } from "@/hooks/use-issue-properties";
 // workflow
-import { WorkflowBlockerModal } from "@/plane-web/components/workflow";
+import { WorkflowBlockerModal } from "@/components/workflow";
 // local imports
 import type { TIssueOperations } from "../issue-detail";
 import { IssueView } from "./view";
